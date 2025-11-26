@@ -82,6 +82,10 @@ func start_session() -> void:
 	deadline_warning_shown = false
 	deadline_expired_shown = false
 	
+	# Schedule deadline notifications
+	if NotificationManager:
+		NotificationManager.on_session_started(TASK_DEADLINE)
+	
 	session_started.emit()
 	print("✓ Session started")
 
@@ -123,6 +127,10 @@ func stop_session() -> void:
 	# Reset deadline tracking
 	deadline_warning_shown = false
 	deadline_expired_shown = false
+	
+	# Cancel deadline notifications
+	if NotificationManager:
+		NotificationManager.on_session_stopped()
 	
 	print("✓ Session ended. Total time: %s" % format_time(final_time))
 	

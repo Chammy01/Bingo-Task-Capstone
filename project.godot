@@ -32,6 +32,7 @@ Toast="*res://Toast.tscn"
 BadgeManager="*res://BadgeManager.gd"
 MusicManager="*res://MusicManager.gd"
 ThemeManager="*res://ThemeManager.gd"
+NotificationManager="*res://NotificationManager.gd"
 
 [display]
 
