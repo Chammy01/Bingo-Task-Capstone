@@ -105,7 +105,30 @@ func _ready():
 	_update_timer_display(SessionManager.get_session_elapsed_time())
 	_update_progress_display()
 	
+	# Initialize notification system (only in non-scheduling mode)
+	if not is_scheduling_mode:
+		_init_notifications()
+	
 	print("✓ BoardManager initialized (Scheduling Mode: %s)" % is_scheduling_mode)
+
+func _init_notifications():
+	"""Initialize NotificationManager based on current board state"""
+	var total = tiles.size()
+	var completed = _count_completed_tasks()
+	var has_tasks = _count_tasks_with_text() > 0
+	
+	if has_tasks:
+		NotificationManager.on_board_loaded(total, completed)
+	else:
+		NotificationManager.on_board_loaded(0, 0)
+
+func _count_tasks_with_text() -> int:
+	"""Count tiles that have task text"""
+	var count = 0
+	for tile in tiles:
+		if tile.task_label.text != "" and tile.task_label.text != "Tap to add task":
+			count += 1
+	return count
 
 # ============================================
 # SCHEDULING MODE
@@ -169,9 +192,13 @@ func _save_scheduled_tasks_for_date():
 	if tasks_for_date.size() > 0:
 		scheduled_tasks[date_key] = tasks_for_date
 		print("✓ Saved %d tasks for %s" % [tasks_for_date.size(), date_key])
+		# Schedule daily reminders for this date
+		NotificationManager.schedule_daily_reminders_for_date(date_key, tasks_for_date.size())
 	else:
 		scheduled_tasks.erase(date_key)
 		print("✓ Removed empty schedule for %s" % date_key)
+		# Cancel daily reminders for this date
+		NotificationManager.cancel_daily_reminders_for_date(date_key)
 	
 	if SaveManager.save_scheduled_tasks(scheduled_tasks):
 		print("✓ Scheduled tasks file updated (%d dates)" % scheduled_tasks.size())
@@ -346,9 +373,11 @@ func _on_timer_updated(elapsed: float):
 
 func _on_session_started():
 	Toast.show_toast("▶️ Session started!", 1.5)
+	NotificationManager.on_session_started()
 
 func _on_session_paused():
 	Toast.show_toast("⏸⏸ Session paused", 1.5)
+	NotificationManager.stop_deadline_tracking()
 
 func _on_session_resumed():
 	Toast.show_toast("▶️ Session resumed!", 1.5)
@@ -356,6 +385,7 @@ func _on_session_resumed():
 func _on_session_stopped():
 	_update_timer_display(0)
 	Toast.show_toast("⏹ Session stopped!", 1.5)
+	NotificationManager.on_session_stopped()
 
 func _on_deadline_warning(seconds_remaining: int):
 	_play_sound(DEADLINE_WARNING_SOUND)
@@ -425,6 +455,7 @@ func on_tile_edit_requested(tile_to_edit):
 	var was_cancelled = result[1]
 	
 	if not was_cancelled:
+		var was_empty = current_text == "" or current_text == "Tap to add task"
 		tile_to_edit.set_task_text(new_task_text)
 		
 		if is_scheduling_mode:
@@ -432,6 +463,11 @@ func on_tile_edit_requested(tile_to_edit):
 			print("✓ Auto-saved scheduled tasks after edit")
 		else:
 			save_all_tasks()
+			# Notify NotificationManager if a task was added
+			if was_empty and new_task_text != "":
+				var total = _count_tasks_with_text()
+				var completed = _count_completed_tasks()
+				NotificationManager.on_task_added(total, completed)
 		
 		print("✓ Task updated: %s" % new_task_text)
 
@@ -469,6 +505,11 @@ func _on_tile_complete_requested(tile):
 	tile.mark_as_completed()
 	BadgeManager.increment_tasks()
 	_update_progress_display()
+	
+	# Notify NotificationManager of task completion
+	var total = _count_tasks_with_text()
+	var completed = _count_completed_tasks()
+	NotificationManager.on_task_completed(total, completed)
 	
 	var row_complete = tile._check_row_complete()
 	var col_complete = tile._check_column_complete()

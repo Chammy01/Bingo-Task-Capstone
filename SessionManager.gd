@@ -23,7 +23,7 @@ enum SessionState { IDLE, RUNNING, PAUSED }
 const SESSION_SAVE_PATH = "user://session_data.save"
 const MIN_TIME_FOR_COINS = 5  # Minimum time before earning coins (seconds)
 const COINS_PER_TASK = 30  # Not used with deadline system
-const TASK_DEADLINE = 15.0  # Deadline for all tasks (seconds)
+const TASK_DEADLINE = 15.0  # Default deadline for all tasks (seconds)
 const BASE_COINS = 30  # Coins if on time
 const LATE_COINS = 25  # Coins if late
 const DEADLINE_WARNING_TIME = 10.0  # When to show warning before deadline
@@ -41,6 +41,10 @@ var total_paused_time: float = 0.0
 var deadline_warning_shown: bool = false
 var deadline_expired_shown: bool = false
 
+# Configurable deadline support
+var session_deadline: float = TASK_DEADLINE  # Configurable deadline (default to TASK_DEADLINE)
+var deadline_enabled: bool = true  # Whether deadline is active
+
 # ============================================
 # LIFECYCLE
 # ============================================
@@ -54,7 +58,8 @@ func _process(_delta):
 	if session_state == SessionState.RUNNING:
 		var elapsed = get_session_elapsed_time()
 		timer_updated.emit(elapsed)
-		_check_deadline_warnings(elapsed)
+		if deadline_enabled:
+			_check_deadline_warnings(elapsed)
 
 # ============================================
 # SESSION CONTROL
@@ -82,6 +87,10 @@ func start_session() -> void:
 	deadline_warning_shown = false
 	deadline_expired_shown = false
 	
+	# Start NotificationManager deadline tracking if enabled
+	if deadline_enabled and session_deadline > 0:
+		NotificationManager.start_deadline_tracking(session_deadline)
+	
 	session_started.emit()
 	print("✓ Session started")
 
@@ -95,6 +104,9 @@ func pause_session() -> void:
 	session_pause_time = Time.get_unix_time_from_system()
 	session_state = SessionState.PAUSED
 	
+	# Pause deadline tracking
+	NotificationManager.stop_deadline_tracking()
+	
 	session_paused.emit()
 
 func resume_session() -> void:
@@ -107,6 +119,13 @@ func resume_session() -> void:
 	var pause_duration = Time.get_unix_time_from_system() - session_pause_time
 	total_paused_time += pause_duration
 	session_state = SessionState.RUNNING
+	
+	# Resume deadline tracking (recalculate remaining time)
+	if deadline_enabled and session_deadline > 0:
+		var elapsed = get_session_elapsed_time()
+		var remaining = session_deadline - elapsed
+		if remaining > 0:
+			NotificationManager.start_deadline_tracking(session_deadline)
 	
 	session_resumed.emit()
 
@@ -123,6 +142,9 @@ func stop_session() -> void:
 	# Reset deadline tracking
 	deadline_warning_shown = false
 	deadline_expired_shown = false
+	
+	# Stop NotificationManager deadline tracking
+	NotificationManager.stop_deadline_tracking()
 	
 	print("✓ Session ended. Total time: %s" % format_time(final_time))
 	
@@ -163,7 +185,7 @@ func format_time(seconds: float) -> String:
 
 func _check_deadline_warnings(elapsed: float) -> void:
 	"""Check if deadline warnings should be shown"""
-	var time_remaining = TASK_DEADLINE - elapsed
+	var time_remaining = session_deadline - elapsed
 	
 	# Show warning when approaching deadline
 	if time_remaining > 0 and time_remaining <= DEADLINE_WARNING_TIME:
@@ -181,7 +203,28 @@ func _check_deadline_warnings(elapsed: float) -> void:
 
 func is_past_deadline() -> bool:
 	"""Check if the current session has passed the deadline"""
-	return get_session_elapsed_time() > TASK_DEADLINE
+	if not deadline_enabled:
+		return false
+	return get_session_elapsed_time() > session_deadline
+
+func set_deadline(seconds: float) -> void:
+	"""Set a custom deadline for the session"""
+	session_deadline = seconds
+	deadline_enabled = true
+	print("✓ Session deadline set to %d seconds" % int(seconds))
+
+func clear_deadline() -> void:
+	"""Clear/disable the deadline"""
+	deadline_enabled = false
+	NotificationManager.stop_deadline_tracking()
+	print("✓ Session deadline cleared")
+
+func get_deadline_remaining() -> float:
+	"""Get remaining time until deadline"""
+	if not deadline_enabled:
+		return -1.0
+	var elapsed = get_session_elapsed_time()
+	return max(0.0, session_deadline - elapsed)
 
 # ============================================
 # HELPER FUNCTIONS
