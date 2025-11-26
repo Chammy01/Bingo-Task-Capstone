@@ -33,7 +33,6 @@ const NO_PROGRESS_INTERVAL_DEBUG = 15    # 15 seconds
 const HOURLY_PROGRESS_INTERVAL_DEBUG = 7 # 7 seconds
 const DEADLINE_5MIN_DEBUG = 30    # 30 seconds
 const DEADLINE_1MIN_DEBUG = 15    # 15 seconds
-const DEADLINE_EXPIRED_DEBUG = 10 # 10 seconds
 
 # ============================================
 # NO TASKS MESSAGES (Randomized)
@@ -389,16 +388,25 @@ func _schedule_notification_at_time(hour: int, minute: int, date: Dictionary, ti
 # DEADLINE WARNING NOTIFICATIONS
 # ============================================
 
-func start_deadline_tracking(deadline_seconds: float):
+func start_deadline_tracking(deadline_seconds: float, is_resume: bool = false):
 	deadline_active = true
 	deadline_total_seconds = deadline_seconds
-	deadline_5min_warning_shown = false
-	deadline_1min_warning_shown = false
-	deadline_expired_shown = false
+	# Only reset warning flags on fresh start, not on resume
+	if not is_resume:
+		deadline_5min_warning_shown = false
+		deadline_1min_warning_shown = false
+		deadline_expired_shown = false
 	deadline_check_timer.start()
-	print("🔔 Deadline tracking started (%d seconds)" % int(deadline_seconds))
+	print("🔔 Deadline tracking started (%d seconds, resume=%s)" % [int(deadline_seconds), is_resume])
+
+func pause_deadline_tracking():
+	"""Pause deadline tracking (preserves warning state for resume)"""
+	deadline_active = false
+	deadline_check_timer.stop()
+	print("🔔 Deadline tracking paused")
 
 func stop_deadline_tracking():
+	"""Stop deadline tracking completely (resets warning state)"""
 	deadline_active = false
 	deadline_check_timer.stop()
 	deadline_5min_warning_shown = false
@@ -415,7 +423,7 @@ func _on_deadline_check_timer_timeout():
 	if SessionManager and SessionManager.is_running():
 		elapsed = SessionManager.get_session_elapsed_time()
 	else:
-		stop_deadline_tracking()
+		pause_deadline_tracking()
 		return
 	
 	_check_deadline_warnings(elapsed, deadline_total_seconds)

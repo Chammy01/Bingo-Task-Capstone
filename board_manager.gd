@@ -379,7 +379,7 @@ func _on_session_started():
 
 func _on_session_paused():
 	Toast.show_toast("⏸⏸ Session paused", 1.5)
-	NotificationManager.stop_deadline_tracking()
+	NotificationManager.pause_deadline_tracking()
 
 func _on_session_resumed():
 	Toast.show_toast("▶️ Session resumed!", 1.5)

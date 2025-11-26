@@ -104,8 +104,8 @@ func pause_session() -> void:
 	session_pause_time = Time.get_unix_time_from_system()
 	session_state = SessionState.PAUSED
 	
-	# Pause deadline tracking
-	NotificationManager.stop_deadline_tracking()
+	# Pause deadline tracking (preserves warning state)
+	NotificationManager.pause_deadline_tracking()
 	
 	session_paused.emit()
 
@@ -120,12 +120,12 @@ func resume_session() -> void:
 	total_paused_time += pause_duration
 	session_state = SessionState.RUNNING
 	
-	# Resume deadline tracking (recalculate remaining time)
+	# Resume deadline tracking (use is_resume=true to preserve warning state)
 	if deadline_enabled and session_deadline > 0:
 		var elapsed = get_session_elapsed_time()
 		var remaining = session_deadline - elapsed
 		if remaining > 0:
-			NotificationManager.start_deadline_tracking(session_deadline)
+			NotificationManager.start_deadline_tracking(session_deadline, true)
 	
 	session_resumed.emit()
 
