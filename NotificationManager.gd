@@ -26,7 +26,8 @@ const DEBUG_DEADLINE_WARNING_BEFORE: float = 5.0  # Debug: warn 5s before deadli
 # ============================================
 
 var debug_mode: bool = false
-var scheduled_notifications: Dictionary = {}  # id -> {delay, message, time_scheduled}
+var scheduled_notifications: Dictionary = {}  # id -> {delay, message, time_scheduled, timer}
+var notification_timers: Dictionary = {}  # id -> Timer reference
 
 # ============================================
 # LIFECYCLE
@@ -58,30 +59,46 @@ func schedule_deadline_warning_notification(seconds_until_deadline: float):
 	"""Schedule a notification for when deadline is near"""
 	# Calculate delay: when to show the notification
 	var warning_time = DEBUG_DEADLINE_WARNING_BEFORE if debug_mode else DEADLINE_WARNING_BEFORE
-	var delay = max(1.0, seconds_until_deadline - warning_time)
+	
+	# If deadline is already closer than warning time, show immediate notification or skip
+	if seconds_until_deadline <= warning_time:
+		if debug_mode:
+			print("🔔 DEBUG: Deadline too close (%.1fs), showing immediate warning" % seconds_until_deadline)
+		# Show immediate notification instead of scheduling
+		var message = "⏰ Deadline approaching! Only %d seconds left to earn full coins!" % int(seconds_until_deadline)
+		_show_notification(NOTIFICATION_ID_DEADLINE_WARNING, message)
+		return
+	
+	var delay = seconds_until_deadline - warning_time
 	
 	# Cancel any existing deadline notification
 	cancel_notification(NOTIFICATION_ID_DEADLINE_WARNING)
 	
-	# Schedule new one
-	var message = "⏰ Deadline approaching! Only %d seconds left to earn full coins!" % int(warning_time)
+	# Calculate actual remaining seconds when notification fires
+	var remaining_at_notification = int(warning_time)
+	var message = "⏰ Deadline approaching! Only %d seconds left to earn full coins!" % remaining_at_notification
+	
+	# Create and store timer
+	var timer = get_tree().create_timer(delay)
+	notification_timers[NOTIFICATION_ID_DEADLINE_WARNING] = timer
 	
 	# Store scheduled notification
 	scheduled_notifications[NOTIFICATION_ID_DEADLINE_WARNING] = {
 		"delay": delay,
 		"message": message,
-		"time_scheduled": Time.get_unix_time_from_system()
+		"time_scheduled": Time.get_unix_time_from_system(),
+		"timer": timer
 	}
 	
 	if debug_mode:
-		print("🔔 DEBUG: Scheduled deadline warning for +%.1fs (warning at %ds before deadline)" % [delay, int(warning_time)])
+		print("🔔 DEBUG: Scheduled deadline warning for +%.1fs (will show %ds remaining)" % [delay, remaining_at_notification])
 		if is_instance_valid(Toast):
 			Toast.show_toast("🔔 DEBUG: Deadline notification scheduled, will fire in %ds" % int(delay), 2.0)
 	else:
 		print("🔔 Scheduled deadline warning notification (delay: %.1fs)" % delay)
 	
-	# Set a timer to show the notification
-	get_tree().create_timer(delay).timeout.connect(func(): _show_notification(NOTIFICATION_ID_DEADLINE_WARNING, message))
+	# Set timer callback
+	timer.timeout.connect(func(): _show_notification(NOTIFICATION_ID_DEADLINE_WARNING, message))
 
 func schedule_deadline_expired_notification(delay: float):
 	"""Schedule a notification for when deadline expires"""
@@ -89,11 +106,16 @@ func schedule_deadline_expired_notification(delay: float):
 	
 	var message = "⚠️ Deadline passed! Complete tasks now for 25 coins instead of 30"
 	
+	# Create and store timer
+	var timer = get_tree().create_timer(delay)
+	notification_timers[NOTIFICATION_ID_DEADLINE_EXPIRED] = timer
+	
 	# Store scheduled notification
 	scheduled_notifications[NOTIFICATION_ID_DEADLINE_EXPIRED] = {
 		"delay": delay,
 		"message": message,
-		"time_scheduled": Time.get_unix_time_from_system()
+		"time_scheduled": Time.get_unix_time_from_system(),
+		"timer": timer
 	}
 	
 	if debug_mode:
@@ -101,8 +123,8 @@ func schedule_deadline_expired_notification(delay: float):
 	else:
 		print("🔔 Scheduled deadline expired notification (delay: %.1fs)" % delay)
 	
-	# Set a timer to show the notification
-	get_tree().create_timer(delay).timeout.connect(func(): _show_notification(NOTIFICATION_ID_DEADLINE_EXPIRED, message))
+	# Set timer callback
+	timer.timeout.connect(func(): _show_notification(NOTIFICATION_ID_DEADLINE_EXPIRED, message))
 
 func cancel_deadline_notifications():
 	"""Cancel all deadline-related notifications"""
@@ -128,7 +150,8 @@ func on_session_stopped():
 func _on_deadline_warning_signal(seconds_remaining: int):
 	"""Handle deadline warning signal from SessionManager"""
 	# Show immediate notification if app is in background
-	if not get_window().has_focus():
+	var window = get_window()
+	if window and not window.has_focus():
 		send_immediate_notification(NOTIFICATION_ID_DEADLINE_WARNING, 
 			"⏰ Deadline Warning!", 
 			"Only %d seconds left to earn full coins!" % seconds_remaining)
@@ -137,7 +160,8 @@ func _on_deadline_warning_signal(seconds_remaining: int):
 
 func _on_deadline_expired_signal():
 	"""Handle deadline expired signal from SessionManager"""
-	if not get_window().has_focus():
+	var window = get_window()
+	if window and not window.has_focus():
 		send_immediate_notification(NOTIFICATION_ID_DEADLINE_EXPIRED,
 			"⚠️ Deadline Passed!",
 			"Complete tasks now for reduced coins (25 instead of 30)")
@@ -150,6 +174,13 @@ func _on_deadline_expired_signal():
 
 func cancel_notification(notification_id: int):
 	"""Cancel a scheduled notification"""
+	# Cancel the timer if it exists and is valid
+	if notification_timers.has(notification_id):
+		var timer = notification_timers[notification_id]
+		# Note: SceneTreeTimer cannot be manually stopped, but we can prevent the callback
+		# by removing the reference and clearing the scheduled notification
+		notification_timers.erase(notification_id)
+	
 	if scheduled_notifications.has(notification_id):
 		scheduled_notifications.erase(notification_id)
 		if debug_mode:
@@ -160,9 +191,12 @@ func _show_notification(notification_id: int, message: String):
 	# Remove from scheduled list
 	if scheduled_notifications.has(notification_id):
 		scheduled_notifications.erase(notification_id)
+	if notification_timers.has(notification_id):
+		notification_timers.erase(notification_id)
 	
 	# Check if app is in background
-	if not get_window().has_focus():
+	var window = get_window()
+	if window and not window.has_focus():
 		# In a real implementation, this would use platform-specific notification APIs
 		# For now, we log it
 		print("🔔 [NOTIFICATION] ID: %d, Message: %s" % [notification_id, message])
