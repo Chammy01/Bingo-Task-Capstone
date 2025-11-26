@@ -1,0 +1,182 @@
+[gd_scene load_steps=13 format=3 uid="uid://cb1lgq7ks5mt2"]
+
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="1_rpmj3"]
+[ext_resource type="Script" uid="uid://cs52jm1pdk8od" path="res://settings_popup.gd" id="1_suvqx"]
+[ext_resource type="FontFile" uid="uid://cobthugrtjcsy" path="res://Fonts/NewPixelFont.tres" id="2_qcyvy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3lx7y"]
+atlas = ExtResource("1_rpmj3")
+region = Rect2(630, 325, 200, 230)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d4wk3"]
+texture = SubResource("AtlasTexture_3lx7y")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_suvqx"]
+atlas = ExtResource("1_rpmj3")
+region = Rect2(836, 420, 122, 92)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cv8lq"]
+atlas = ExtResource("1_rpmj3")
+region = Rect2(836, 325, 160, 92)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hl1vd"]
+texture = SubResource("AtlasTexture_cv8lq")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hl1vd"]
+atlas = ExtResource("1_rpmj3")
+region = Rect2(498, 540, 108, 47)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vhm4n"]
+atlas = ExtResource("1_rpmj3")
+region = Rect2(498, 491, 108, 44)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fsjex"]
+atlas = ExtResource("1_rpmj3")
+region = Rect2(498, 540, 108, 47)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xwmmc"]
+atlas = ExtResource("1_rpmj3")
+region = Rect2(498, 491, 108, 44)
+
+[node name="Settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_suvqx")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = -5.0
+offset_right = -1.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.39215687)
+
+[node name="CorkboardPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -166.0
+offset_top = -169.0
+offset_right = 227.0
+offset_bottom = 188.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.825, 0.825)
+theme_override_styles/panel = SubResource("StyleBoxTexture_d4wk3")
+
+[node name="StickySettings" type="Sprite2D" parent="CorkboardPanel"]
+position = Vector2(199.99998, 76.363625)
+scale = Vector2(0.95, 0.95)
+texture = SubResource("AtlasTexture_suvqx")
+
+[node name="TitleLabel" type="Label" parent="CorkboardPanel/StickySettings"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -113.312584
+offset_top = -52.379562
+offset_right = 14.687416
+offset_bottom = -17.379562
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.835, 0.835)
+theme_override_colors/font_color = Color(0.29803923, 0.06666667, 0.05490196, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.23529412)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_qcyvy")
+text = "Settings
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SoundStickyNote" type="Panel" parent="CorkboardPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -133.4697
+offset_top = -53.651497
+offset_right = -11.469635
+offset_bottom = 38.34848
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.009990899
+scale = Vector2(2.225, 2.225)
+theme_override_styles/panel = SubResource("StyleBoxTexture_hl1vd")
+
+[node name="SoundLabel" type="Label" parent="CorkboardPanel/SoundStickyNote"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.914196
+offset_top = -16.588041
+offset_right = 20.0858
+offset_bottom = -0.5880432
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.24313726, 0.15294118, 0.13725491, 1)
+theme_override_fonts/font = ExtResource("2_qcyvy")
+theme_override_font_sizes/font_size = 8
+text = "Sound"
+
+[node name="MusicLabel" type="Label" parent="CorkboardPanel/SoundStickyNote"]
+layout_mode = 0
+offset_left = 26.495123
+offset_top = 50.666862
+offset_right = 66.495125
+offset_bottom = 66.66686
+theme_override_colors/font_color = Color(0.24313726, 0.15294118, 0.13725491, 1)
+theme_override_fonts/font = ExtResource("2_qcyvy")
+theme_override_font_sizes/font_size = 6
+text = "Music"
+
+[node name="MusicToggle" type="TextureButton" parent="CorkboardPanel/SoundStickyNote/MusicLabel"]
+layout_mode = 0
+offset_left = 40.105
+offset_right = 148.10503
+offset_bottom = 44.0
+scale = Vector2(0.24, 0.24)
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_hl1vd")
+texture_pressed = SubResource("AtlasTexture_vhm4n")
+
+[node name="SFXLabel" type="Label" parent="CorkboardPanel/SoundStickyNote"]
+layout_mode = 0
+offset_left = 26.335276
+offset_top = 66.666046
+offset_right = 66.33528
+offset_bottom = 82.666046
+theme_override_colors/font_color = Color(0.24313726, 0.15294118, 0.13725491, 1)
+theme_override_fonts/font = ExtResource("2_qcyvy")
+theme_override_font_sizes/font_size = 6
+text = "SFX"
+
+[node name="SFXToggle" type="TextureButton" parent="CorkboardPanel/SoundStickyNote/SFXLabel"]
+layout_mode = 0
+offset_left = 40.105003
+offset_right = 148.10501
+offset_bottom = 46.0
+scale = Vector2(0.24, 0.24)
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_fsjex")
+texture_pressed = SubResource("AtlasTexture_xwmmc")

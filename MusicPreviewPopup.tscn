@@ -1,0 +1,137 @@
+[gd_scene load_steps=11 format=3 uid="uid://blu17w1dni0ki"]
+
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="1_qsnsi"]
+[ext_resource type="Script" uid="uid://dbdo8ybeceaw2" path="res://music_preview_popup.gd" id="1_wmfdu"]
+[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://Fonts/MinecraftRegular-Bmg3.otf" id="4_igl3q"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_igl3q"]
+region = Rect2(0, 834, 147, 202)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c7yju"]
+atlas = ExtResource("1_qsnsi")
+region = Rect2(455, 645, 45, 45)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iw21m"]
+atlas = ExtResource("1_qsnsi")
+region = Rect2(75, 461, 72, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wmfdu"]
+atlas = ExtResource("1_qsnsi")
+region = Rect2(319, 479, 72, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fe30e"]
+atlas = ExtResource("1_qsnsi")
+region = Rect2(587, 64, 168, 62)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wg3l5"]
+atlas = ExtResource("1_qsnsi")
+region = Rect2(0, 538, 72, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h0l73"]
+atlas = ExtResource("1_qsnsi")
+region = Rect2(75, 538, 72, 74)
+
+[node name="MusicPreviewPopup" type="CanvasLayer"]
+script = ExtResource("1_wmfdu")
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.39215687)
+
+[node name="PopupPanel" type="PanelContainer" parent="Overlay"]
+custom_minimum_size = Vector2(226.47, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -131.415
+offset_top = -181.94249
+offset_right = 131.415
+offset_bottom = 181.94249
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Overlay/PopupPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = -15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 33
+
+[node name="Control" type="Control" parent="Overlay/PopupPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="CardPreview" type="TextureRect" parent="Overlay/PopupPanel/MarginContainer/Control"]
+custom_minimum_size = Vector2(220, 303)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -151.5
+offset_right = 110.0
+offset_bottom = 151.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_igl3q")
+
+[node name="PriceTag" type="TextureRect" parent="Overlay/PopupPanel/MarginContainer/Control/CardPreview"]
+layout_mode = 0
+offset_left = 136.345
+offset_top = 52.274994
+offset_right = 181.345
+offset_bottom = 97.274994
+scale = Vector2(1.34, 1.34)
+texture = SubResource("AtlasTexture_c7yju")
+
+[node name="PriceLabel" type="Label" parent="Overlay/PopupPanel/MarginContainer/Control/CardPreview/PriceTag"]
+z_index = 1
+layout_mode = 0
+offset_left = 8.955222
+offset_top = 28.358208
+offset_right = 48.955223
+offset_bottom = 48.358208
+rotation = -0.77038044
+scale = Vector2(0.5, 0.5)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.10980392)
+theme_override_fonts/font = ExtResource("4_igl3q")
+theme_override_font_sizes/font_size = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Overlay/PopupPanel/MarginContainer/Control"]
+layout_mode = 0
+offset_left = -2.6549969
+offset_top = 332.275
+offset_right = 411.345
+offset_bottom = 406.275
+scale = Vector2(0.58, 0.58)
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="PlayButton" type="TextureButton" parent="Overlay/PopupPanel/MarginContainer/Control/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_iw21m")
+texture_pressed = SubResource("AtlasTexture_wmfdu")
+
+[node name="BuyButton" type="TextureButton" parent="Overlay/PopupPanel/MarginContainer/Control/HBoxContainer"]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_fe30e")
+
+[node name="CancelButton" type="TextureButton" parent="Overlay/PopupPanel/MarginContainer/Control/HBoxContainer"]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_wg3l5")
+texture_pressed = SubResource("AtlasTexture_h0l73")
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+
+[connection signal="pressed" from="Overlay/PopupPanel/MarginContainer/Control/HBoxContainer/PlayButton" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Overlay/PopupPanel/MarginContainer/Control/HBoxContainer/BuyButton" to="." method="_on_buy_pressed"]
+[connection signal="pressed" from="Overlay/PopupPanel/MarginContainer/Control/HBoxContainer/CancelButton" to="." method="_on_cancel_pressed"]

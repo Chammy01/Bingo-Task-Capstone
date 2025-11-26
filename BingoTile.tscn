@@ -1,0 +1,164 @@
+[gd_scene load_steps=22 format=3 uid="uid://306dme0mw16f"]
+
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="1_15ttv"]
+[ext_resource type="Script" uid="uid://c40pagyi8lhno" path="res://bingo_tile.gd" id="2_ljjvy"]
+[ext_resource type="FontFile" uid="uid://bv6uqh2mdmjvf" path="res://Fonts/Gaegu-Pixel(1).ttf" id="3_15ttv"]
+[ext_resource type="AudioStream" uid="uid://cei8t043b21bo" path="res://music/StickNote.mp3" id="4_ljjvy"]
+[ext_resource type="AudioStream" uid="uid://df8ovej1radbs" path="res://music/checkmark.mp3" id="5_dskfu"]
+[ext_resource type="AudioStream" uid="uid://cfr356e6lgkcm" path="res://music/eraser.mp3" id="6_j03kw"]
+[ext_resource type="FontFile" uid="uid://cwlcr0dm4kdvu" path="res://Fonts/ARCADECLASSIC.TTF" id="7_iqe3r"]
+[ext_resource type="Texture2D" uid="uid://ds687vyusnts4" path="res://CheckMark Animation/checkmark.png" id="8_iqe3r"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dskfu"]
+atlas = ExtResource("1_15ttv")
+region = Rect2(1388, 0, 102, 114)
+
+[sub_resource type="LabelSettings" id="LabelSettings_j03kw"]
+line_spacing = -10.2
+font = ExtResource("3_15ttv")
+font_size = 24
+font_color = Color(0.4509804, 0.2627451, 0.1764706, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iqe3r"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(0, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_32ra4"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(68, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n22a3"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(136, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_exgxr"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(204, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_es1fo"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(272, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ol7dr"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(340, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4pp20"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(408, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v4nma"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(476, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vusk0"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(544, 0, 68, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jq4h7"]
+atlas = ExtResource("8_iqe3r")
+region = Rect2(612, 0, 68, 58)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_h046i"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iqe3r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_32ra4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n22a3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_exgxr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_es1fo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ol7dr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4pp20")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v4nma")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vusk0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jq4h7")
+}],
+"loop": false,
+"name": &"check",
+"speed": 10.0
+}]
+
+[node name="BingoTile" type="TextureButton"]
+offset_right = 40.0
+offset_bottom = 40.0
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_dskfu")
+script = ExtResource("2_ljjvy")
+
+[node name="TaskLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 16.0
+offset_right = 169.525
+offset_bottom = 155.4
+scale = Vector2(0.535, 0.535)
+theme_override_colors/font_color = Color(0.4509804, 0.2627451, 0.1764706, 1)
+label_settings = SubResource("LabelSettings_j03kw")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+text_overrun_behavior = 3
+uppercase = true
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="EditSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_ljjvy")
+volume_db = 2.0
+
+[node name="CompleteSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_dskfu")
+volume_db = -4.0
+
+[node name="UncompleteSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_j03kw")
+volume_db = 11.0
+
+[node name="TimeLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 98.00001
+offset_right = 50.35
+offset_bottom = 113.00001
+scale = Vector2(0.6, 0.6)
+theme_override_fonts/font = ExtResource("7_iqe3r")
+theme_override_font_sizes/font_size = 14
+vertical_alignment = 1
+
+[node name="CoinsLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 83.0
+offset_top = 8.0
+offset_right = 109.725006
+offset_bottom = 23.0
+scale = Vector2(0.6, 0.6)
+theme_override_fonts/font = ExtResource("7_iqe3r")
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Xmark" type="AnimatedSprite2D" parent="."]
+position = Vector2(50.51, 63.25)
+sprite_frames = SubResource("SpriteFrames_h046i")
+animation = &"check"
+frame = 9
+frame_progress = 1.0

@@ -1,0 +1,165 @@
+extends "res://base_scene.gd"
+
+# ============================================
+# NODE REFERENCES
+# ============================================
+
+@onready var button_sound: AudioStreamPlayer = $ButtonSound
+@onready var start_button: TextureButton = $START/START
+@onready var settings_button: TextureButton = $Settings
+
+# Auto-collected decoration nodes (Deco1, Deco2, Deco3, Deco4, etc.)
+var deco_nodes: Array = []
+
+# ============================================
+# PRELOADS
+# ============================================
+
+const SETTINGS_POPUP = preload("res://SettingsPopup.tscn")
+const BUTTON_SOUND_DURATION = 0.25
+
+# ============================================
+# INITIALIZATION
+# ============================================
+
+func _ready():
+	super._ready()  # Call base _ready() for background
+	
+	_auto_collect_decorations()
+	
+	if not start_button.pressed.is_connected(_on_start_pressed):
+		start_button.pressed.connect(_on_start_pressed)
+	if not settings_button.pressed.is_connected(_on_settings_pressed):
+		settings_button.pressed.connect(_on_settings_pressed)
+	
+	_apply_audio_settings()
+	_update_decorations()
+	
+	if not ThemeManager.theme_changed.is_connected(_on_theme_changed_custom):
+		ThemeManager.theme_changed.connect(_on_theme_changed_custom)
+	
+	print("✓ Main Menu initialized with %d decoration slots" % deco_nodes.size())
+
+# ============================================
+# DECORATION AUTO-DETECTION
+# ============================================
+
+func _auto_collect_decorations():
+	deco_nodes.clear()
+	var i = 1
+	while true:
+		var deco_name = "Deco%d" % i
+		var deco = get_node_or_null(deco_name)
+		if deco == null:
+			break
+		deco_nodes.append(deco)
+		i += 1
+	
+	if deco_nodes.size() == 0:
+		print("  ⚠️ No decoration nodes found (add Sprite2D nodes named 'Deco1', 'Deco2', etc.)")
+
+# ============================================
+# DECORATION MANAGEMENT
+# ============================================
+
+func _on_theme_changed_custom(_theme_id: String):
+	print("\n🎨 Theme changed, updating decorations...")
+	_update_decorations()
+
+func _update_decorations():
+	var decoration_data = ThemeManager.get_current_decorations()
+	if decoration_data.size() == 0:
+		_hide_all_decorations()
+		return
+	
+	var sprite_sheet = decoration_data.get("sprite_sheet")
+	if not sprite_sheet:
+		_hide_all_decorations()
+		return
+	
+	if not sprite_sheet is Texture2D:
+		_hide_all_decorations()
+		print("  ⚠️ Sprite sheet is not a valid Texture2D")
+		return
+	
+	var items = decoration_data.get("items", [])
+	for i in range(min(items.size(), deco_nodes.size())):
+		var deco = deco_nodes[i]
+		var item = items[i]
+		
+		var atlas_texture = AtlasTexture.new()
+		atlas_texture.atlas = sprite_sheet
+		atlas_texture.region = item.region
+		
+		deco.texture = atlas_texture
+		deco.scale = Vector2(item.scale, item.scale)
+		deco.visible = true
+	
+	for i in range(items.size(), deco_nodes.size()):
+		if deco_nodes[i]:
+			deco_nodes[i].visible = false
+
+func _hide_all_decorations():
+	for deco in deco_nodes:
+		if deco:
+			deco.visible = false
+	print("  ⚪ All decorations hidden")
+
+# ============================================
+# BUTTON HANDLERS
+# ============================================
+
+func _on_shop_pressed() -> void:
+	button_sound.play()
+	await get_tree().create_timer(BUTTON_SOUND_DURATION).timeout
+	get_tree().change_scene_to_file("res://ShopScene.tscn")
+	print("→ Loading shop scene")
+
+func _on_badges_pressed() -> void:
+	button_sound.play()
+	await get_tree().create_timer(BUTTON_SOUND_DURATION).timeout
+	get_tree().change_scene_to_file("res://StampsScene.tscn")
+	print("→ Loading stamps scene")
+
+func _on_start_pressed() -> void:
+	button_sound.play()
+	await get_tree().create_timer(BUTTON_SOUND_DURATION).timeout
+	get_tree().change_scene_to_file("res://bingo_board.tscn")
+	print("→ Loading bingo board")
+
+func _on_settings_pressed() -> void:
+	button_sound.play()
+	await get_tree().create_timer(BUTTON_SOUND_DURATION).timeout
+	var popup = SETTINGS_POPUP.instantiate()
+	get_tree().root.add_child(popup)
+	popup.settings_closed.connect(_on_settings_closed)
+	print("⚙️ Settings popup opened")
+
+func _on_settings_closed():
+	_apply_audio_settings()
+	print("⚙️ Settings closed")
+
+# ============================================
+# AUDIO SETTINGS
+# ============================================
+
+func _apply_audio_settings():
+	var music_on = SaveManager.get_setting("music_enabled", true)
+	var sfx_on = SaveManager.get_setting("sfx_enabled", true)
+	
+	var music_bus_index = AudioServer.get_bus_index("Music")
+	if music_bus_index == -1:
+		print("⚠️ 'Music' bus not found in AudioServer, using Master bus")
+		music_bus_index = AudioServer.get_bus_index("Master")
+	
+	var sfx_bus_index = AudioServer.get_bus_index("SFX")
+	if sfx_bus_index == -1:
+		print("⚠️ 'SFX' bus not found in AudioServer, using Master bus")
+		sfx_bus_index = AudioServer.get_bus_index("Master")
+	
+	if music_bus_index != -1:
+		AudioServer.set_bus_volume_db(music_bus_index, 0.0 if music_on else -80.0)
+	if sfx_bus_index != -1:
+		AudioServer.set_bus_volume_db(sfx_bus_index, 0.0 if sfx_on else -80.0)
+	
+	print("✓ Audio settings applied: Music=%s, SFX=%s" % [music_on, sfx_on])

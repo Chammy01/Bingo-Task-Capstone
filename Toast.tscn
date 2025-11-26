@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://bns7h3fyv3ey0"]
+
+[ext_resource type="Script" uid="uid://dtbecrxx0mpmv" path="res://toast.gd" id="1_uybjb"]
+[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://Fonts/MinecraftRegular-Bmg3.otf" id="2_fdq47"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nbng2"]
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0.6117647)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="Toast" type="CanvasLayer"]
+script = ExtResource("1_uybjb")
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(180, 45)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -90.0
+offset_top = -104.0
+offset_right = 90.0
+offset_bottom = -54.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_nbng2")
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -86.0
+offset_top = -20.0
+offset_right = 462.11
+offset_bottom = 106.91
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.31, 0.31)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/paragraph_spacing = 0
+theme_override_fonts/font = ExtResource("2_fdq47")
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+autowrap_trim_flags = 128
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true

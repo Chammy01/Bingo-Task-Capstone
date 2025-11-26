@@ -1,0 +1,309 @@
+[gd_scene load_steps=18 format=3 uid="uid://dts0lsphbr6hh"]
+
+[ext_resource type="Texture2D" uid="uid://btq0d80t13ive" path="res://Background/default.png" id="1_ck8l3"]
+[ext_resource type="Script" uid="uid://dfhj1ckcmn0ip" path="res://stamps_scene.gd" id="1_t3x40"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="2_t3x40"]
+[ext_resource type="FontFile" uid="uid://baon0phiso5m0" path="res://Fonts/PressStart2P-vaV7.ttf" id="5_32vt4"]
+[ext_resource type="Script" uid="uid://djio57t645dff" path="res://Calendar.gd" id="5_sv5u3"]
+[ext_resource type="FontFile" uid="uid://bqgltdlnfecy7" path="res://Fonts/Calendar Font.ttf" id="6_sv5u3"]
+[ext_resource type="AudioStream" uid="uid://cyfph4lf3yi0a" path="res://music/touchpad.mp3" id="7_32vt4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nmy5l"]
+atlas = ExtResource("2_t3x40")
+region = Rect2(1004, 0, 381, 408)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4qkfu"]
+atlas = ExtResource("2_t3x40")
+region = Rect2(0, 255, 136, 87)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ti7wv"]
+atlas = ExtResource("2_t3x40")
+region = Rect2(206, 0, 100, 124)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t3x40"]
+atlas = ExtResource("2_t3x40")
+region = Rect2(0, 384, 72, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_32vt4"]
+atlas = ExtResource("2_t3x40")
+region = Rect2(75, 384, 72, 74)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sv5u3"]
+atlas = ExtResource("2_t3x40")
+region = Rect2(1083, 568, 22, 185)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hcigu"]
+atlas = ExtResource("2_t3x40")
+region = Rect2(426, 491, 60, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yehey"]
+atlas = ExtResource("2_t3x40")
+region = Rect2(1130, 416, 143, 147)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hcigu"]
+font = ExtResource("5_32vt4")
+font_size = 24
+font_color = Color(0.9843137, 0.9254902, 0.8, 1)
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.5647059)
+shadow_offset = Vector2(1.225, 1.42)
+
+[sub_resource type="LabelSettings" id="LabelSettings_uw5c6"]
+font = ExtResource("6_sv5u3")
+font_size = 28
+font_color = Color(0.77254903, 0.2509804, 0.1764706, 1)
+outline_size = 9
+outline_color = Color(0.38431373, 0.1254902, 0.08627451, 1)
+shadow_size = 10
+shadow_offset = Vector2(2.4, 2.12)
+
+[node name="StampsScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t3x40")
+
+[node name="ButtonSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_32vt4")
+volume_db = 15.0
+bus = &"SFX"
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -10.0
+offset_top = -10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.05, 1.05)
+texture = ExtResource("1_ck8l3")
+expand_mode = 1
+
+[node name="Notebook" type="Sprite2D" parent="."]
+position = Vector2(180, 415)
+scale = Vector2(0.94, 0.94)
+texture = SubResource("AtlasTexture_nmy5l")
+
+[node name="PostmailBoard" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 57.999996
+offset_top = 244.0
+offset_right = 196.0
+offset_bottom = 332.0
+scale = Vector2(1.765, 1.765)
+texture = SubResource("AtlasTexture_4qkfu")
+
+[node name="StampsContainer" type="Control" parent="PostmailBoard"]
+anchors_preset = 0
+offset_left = 9.200001
+offset_top = 24.400011
+offset_right = 129.2
+offset_bottom = 79.2
+
+[node name="Stamp1" type="TextureRect" parent="PostmailBoard/StampsContainer"]
+layout_mode = 0
+offset_left = -1.6
+offset_top = 2.4
+offset_right = 98.4
+offset_bottom = 126.4
+scale = Vector2(0.4, 0.4)
+texture = SubResource("AtlasTexture_ti7wv")
+
+[node name="ClickArea" type="Button" parent="PostmailBoard/StampsContainer/Stamp1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0)
+flat = true
+
+[node name="Stamp2" type="TextureRect" parent="PostmailBoard/StampsContainer"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.4
+offset_right = 140.0
+offset_bottom = 126.4
+scale = Vector2(0.4, 0.4)
+texture = SubResource("AtlasTexture_ti7wv")
+
+[node name="ClickArea" type="Button" parent="PostmailBoard/StampsContainer/Stamp2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0)
+flat = true
+
+[node name="Stamp3" type="TextureRect" parent="PostmailBoard/StampsContainer"]
+layout_mode = 0
+offset_left = 81.6
+offset_top = 2.4
+offset_right = 181.6
+offset_bottom = 126.4
+scale = Vector2(0.4, 0.4)
+texture = SubResource("AtlasTexture_ti7wv")
+
+[node name="ClickArea" type="Button" parent="PostmailBoard/StampsContainer/Stamp3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0)
+flat = true
+
+[node name="PostmailBoard2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 58.999996
+offset_top = 413.0
+offset_right = 197.0
+offset_bottom = 501.0
+scale = Vector2(1.765, 1.765)
+texture = SubResource("AtlasTexture_4qkfu")
+
+[node name="StampsContainer" type="Control" parent="PostmailBoard2"]
+anchors_preset = 0
+offset_left = 9.200001
+offset_top = 24.400011
+offset_right = 129.2
+offset_bottom = 79.2
+
+[node name="Stamp4" type="TextureRect" parent="PostmailBoard2/StampsContainer"]
+layout_mode = 0
+offset_left = -1.6
+offset_top = 2.4
+offset_right = 98.4
+offset_bottom = 126.4
+scale = Vector2(0.4, 0.4)
+texture = SubResource("AtlasTexture_ti7wv")
+
+[node name="ClickArea" type="Button" parent="PostmailBoard2/StampsContainer/Stamp4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0)
+flat = true
+
+[node name="Stamp5" type="TextureRect" parent="PostmailBoard2/StampsContainer"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.4
+offset_right = 140.0
+offset_bottom = 126.4
+scale = Vector2(0.4, 0.4)
+texture = SubResource("AtlasTexture_ti7wv")
+
+[node name="ClickArea" type="Button" parent="PostmailBoard2/StampsContainer/Stamp5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0)
+flat = true
+
+[node name="Stamp6" type="TextureRect" parent="PostmailBoard2/StampsContainer"]
+layout_mode = 0
+offset_left = 81.6
+offset_top = 2.4
+offset_right = 181.6
+offset_bottom = 126.4
+scale = Vector2(0.4, 0.4)
+texture = SubResource("AtlasTexture_ti7wv")
+
+[node name="ClickArea" type="Button" parent="PostmailBoard2/StampsContainer/Stamp6"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0)
+flat = true
+
+[node name="BackButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 304.0
+offset_top = 663.0
+offset_right = 376.0
+offset_bottom = 737.0
+scale = Vector2(0.5, 0.5)
+texture_normal = SubResource("AtlasTexture_t3x40")
+texture_pressed = SubResource("AtlasTexture_32vt4")
+
+[node name="Pencil" type="Sprite2D" parent="."]
+position = Vector2(150, 209.99998)
+rotation = 1.5707964
+scale = Vector2(0.705, 1.195)
+texture = SubResource("AtlasTexture_sv5u3")
+
+[node name="Settings" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 311.0
+offset_top = 19.0
+offset_right = 373.0
+offset_bottom = 85.0
+scale = Vector2(0.605, 0.605)
+texture_normal = SubResource("AtlasTexture_hcigu")
+ignore_texture_size = true
+
+[node name="Calendar" type="Node2D" parent="."]
+position = Vector2(18, -1)
+script = ExtResource("5_sv5u3")
+
+[node name="CalendarSprite" type="TextureButton" parent="Calendar"]
+offset_left = 203.00003
+offset_top = 63.000008
+offset_right = 346.00003
+offset_bottom = 210.0
+scale = Vector2(0.88969016, 0.88969016)
+texture_normal = SubResource("AtlasTexture_yehey")
+metadata/_edit_use_anchors_ = true
+
+[node name="MonthLabel" type="Label" parent="Calendar"]
+offset_left = 254.00003
+offset_top = 93.0
+offset_right = 365.99997
+offset_bottom = 163.0
+rotation = 0.19176693
+scale = Vector2(0.5, 0.5)
+text = "OCT"
+label_settings = SubResource("LabelSettings_hcigu")
+metadata/_edit_use_anchors_ = true
+
+[node name="DayLabel" type="Label" parent="Calendar"]
+offset_left = 219.99998
+offset_top = 118.99999
+offset_right = 394.0
+offset_bottom = 267.0
+rotation = 0.20486297
+scale = Vector2(0.545, 0.545)
+text = "5"
+label_settings = SubResource("LabelSettings_uw5c6")
+horizontal_alignment = 1
+clip_text = true
+uppercase = true
+metadata/_edit_use_anchors_ = true
+
+[node name="UpdateTimer" type="Timer" parent="Calendar"]
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]
+[connection signal="timeout" from="Calendar/UpdateTimer" to="Calendar" method="check_for_date_change"]

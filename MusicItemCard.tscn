@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://ta78rbtlec6g"]
+
+[ext_resource type="Script" uid="uid://dm67ofib5g1gc" path="res://music_item_card.gd" id="1_bq1p1"]
+
+[node name="MusicItemCard" type="TextureRect"]
+custom_minimum_size = Vector2(147, 202)
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.71, 0.71)
+mouse_filter = 0
+script = ExtResource("1_bq1p1")

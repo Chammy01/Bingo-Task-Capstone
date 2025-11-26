@@ -1,0 +1,177 @@
+[gd_scene load_steps=18 format=3 uid="uid://cjsjqgk6n38k5"]
+
+[ext_resource type="Script" uid="uid://d0ggiugh2xw8o" path="res://main_menu.gd" id="1_l2rqn"]
+[ext_resource type="Texture2D" uid="uid://btq0d80t13ive" path="res://Background/default.png" id="2_4rjhv"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="3_4rjhv"]
+[ext_resource type="Texture2D" uid="uid://b4fdsxav63ho3" path="res://Buttons/ELR_SpringlLeaf.png" id="5_10d3e"]
+[ext_resource type="AudioStream" uid="uid://cyfph4lf3yi0a" path="res://music/touchpad.mp3" id="7_l2rqn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0t76g"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_et0r5"]
+region = Rect2(901, 828, 33, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xaurw"]
+region = Rect2(945, 858, 51, 45)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_4rjhv"]
+particles_animation = true
+particles_anim_h_frames = 7
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_l2rqn"]
+offsets = PackedFloat32Array(0, 0.138393, 0.65625, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0t76g"]
+gradient = SubResource("Gradient_l2rqn")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0fgqv"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(200, 400, 1)
+direction = Vector3(1, 2, 2)
+spread = 20.0
+initial_velocity_min = 20.0
+initial_velocity_max = 80.0
+gravity = Vector3(0, 15, 0)
+scale_min = 0.5
+scale_max = 1.5
+color_ramp = SubResource("GradientTexture1D_0t76g")
+anim_offset_max = 1.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nlkkf"]
+atlas = ExtResource("3_4rjhv")
+region = Rect2(1392, 249, 126, 125)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_10d3e"]
+atlas = ExtResource("3_4rjhv")
+region = Rect2(416, 0, 168, 62)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4rjhv"]
+atlas = ExtResource("3_4rjhv")
+region = Rect2(416, 64, 168, 62)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l2rqn"]
+atlas = ExtResource("3_4rjhv")
+region = Rect2(416, 128, 168, 62)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_etpoy"]
+atlas = ExtResource("3_4rjhv")
+region = Rect2(426, 491, 60, 65)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l2rqn")
+
+[node name="ButtonSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_l2rqn")
+volume_db = 11.0
+bus = &"SFX"
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -10.000001
+offset_top = -10.000001
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.05, 1.05)
+texture = ExtResource("2_4rjhv")
+expand_mode = 1
+
+[node name="Deco1" type="Sprite2D" parent="."]
+position = Vector2(331, 165)
+scale = Vector2(2.445, 2.445)
+texture = SubResource("AtlasTexture_0t76g")
+
+[node name="Deco2" type="Sprite2D" parent="."]
+position = Vector2(312.99997, 613)
+scale = Vector2(2.71, 2.71)
+texture = SubResource("AtlasTexture_et0r5")
+
+[node name="Deco3" type="Sprite2D" parent="."]
+position = Vector2(44, 322)
+scale = Vector2(2.92, 2.92)
+
+[node name="Deco4" type="Sprite2D" parent="."]
+position = Vector2(105, 632.99994)
+scale = Vector2(2.87, 2.87)
+texture = SubResource("AtlasTexture_xaurw")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_4rjhv")
+position = Vector2(173, 338)
+amount = 20
+texture = ExtResource("5_10d3e")
+visibility_rect = Rect2(-173.015, -340.2, 359.315, 728.5)
+process_material = SubResource("ParticleProcessMaterial_0fgqv")
+
+[node name="Logo" type="Sprite2D" parent="."]
+position = Vector2(171.00002, 146.00002)
+scale = Vector2(1.55, 1.55)
+texture = SubResource("AtlasTexture_nlkkf")
+
+[node name="START" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 124.99999
+offset_top = 259.0
+offset_right = 293.0
+offset_bottom = 321.0
+rotation = 0.061086524
+scale = Vector2(1.335, 1.335)
+
+[node name="START" type="TextureButton" parent="START"]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_10d3e")
+
+[node name="SHOP" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 85.999985
+offset_top = 455.99997
+offset_right = 253.99998
+offset_bottom = 518.0
+rotation = 0.061086524
+scale = Vector2(1.335, 1.335)
+
+[node name="SHOP" type="TextureButton" parent="SHOP"]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_4rjhv")
+
+[node name="BADGES" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 105.99999
+offset_top = 370.99997
+offset_right = 274.0
+offset_bottom = 433.00003
+rotation = -0.061086524
+scale = Vector2(1.335, 1.335)
+
+[node name="BADGES" type="TextureButton" parent="BADGES"]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_l2rqn")
+
+[node name="Settings" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 311.0
+offset_top = 19.0
+offset_right = 373.0
+offset_bottom = 85.0
+scale = Vector2(0.605, 0.605)
+texture_normal = SubResource("AtlasTexture_etpoy")
+ignore_texture_size = true
+
+[connection signal="pressed" from="START/START" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="SHOP/SHOP" to="." method="_on_shop_pressed"]
+[connection signal="pressed" from="BADGES/BADGES" to="." method="_on_badges_pressed"]
+[connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]

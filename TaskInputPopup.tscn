@@ -1,0 +1,108 @@
+[gd_scene load_steps=11 format=3 uid="uid://bjmvd45enfcx7"]
+
+[ext_resource type="Script" uid="uid://b2bfisn33ggte" path="res://task_input_popup.gd" id="1_rkdhm"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="2_fbqgv"]
+[ext_resource type="FontFile" uid="uid://bv6uqh2mdmjvf" path="res://Fonts/Gaegu-Pixel(1).ttf" id="3_mdkuy"]
+[ext_resource type="FontFile" uid="uid://cuw8bwaypt5pf" path="res://Fonts/Gaegu-Regular.ttf" id="4_j8txc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mdkuy"]
+atlas = ExtResource("2_fbqgv")
+region = Rect2(1388, 0, 102, 114)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t8c8h"]
+atlas = ExtResource("2_fbqgv")
+region = Rect2(1499, 127, 88, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5rlxu"]
+atlas = ExtResource("2_fbqgv")
+region = Rect2(1499, 148, 77, 16)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fbqgv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j8txc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mdkuy"]
+
+[node name="TaskInputPopup" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_rkdhm")
+
+[node name="BackgroundDim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(9, 18)
+color = Color(0, 0, 0, 0.39215687)
+
+[node name="StickyNote" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 75.475
+offset_top = 240.555
+offset_right = 177.47507
+offset_bottom = 353.55515
+scale = Vector2(1.97, 1.97)
+texture = SubResource("AtlasTexture_mdkuy")
+
+[node name="ConfirmButton" type="TextureButton" parent="StickyNote"]
+layout_mode = 0
+offset_left = 41.89087
+offset_top = 97.68782
+offset_right = 129.89087
+offset_bottom = 137.68782
+scale = Vector2(0.38, 0.38)
+texture_normal = SubResource("AtlasTexture_t8c8h")
+
+[node name="CancelButton" type="TextureButton" parent="StickyNote"]
+layout_mode = 0
+offset_left = 5.850255
+offset_top = 98.195435
+offset_right = 82.85026
+offset_bottom = 138.19543
+scale = Vector2(0.38, 0.38)
+texture_normal = SubResource("AtlasTexture_5rlxu")
+
+[node name="MarginContainer" type="MarginContainer" parent="StickyNote"]
+layout_mode = 0
+offset_left = 1.408
+offset_top = 30.667
+offset_right = 311.813
+offset_bottom = 211.307
+scale = Vector2(0.31, 0.31)
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="TaskInput" type="TextEdit" parent="StickyNote/MarginContainer"]
+layout_mode = 2
+theme_override_colors/caret_color = Color(0.4509804, 0.2627451, 0.1764706, 1)
+theme_override_colors/font_color = Color(0.4509804, 0.2627451, 0.1764706, 1)
+theme_override_colors/font_placeholder_color = Color(0.4509804, 0.2627451, 0.1764706, 1)
+theme_override_fonts/font = ExtResource("3_mdkuy")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fbqgv")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_j8txc")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_mdkuy")
+wrap_mode = 1
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+caret_blink = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 83.0
+offset_top = 291.0
+offset_right = 267.0
+offset_bottom = 308.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.44705883)
+theme_override_fonts/font = ExtResource("4_j8txc")
+text = "Enter your task:"
+horizontal_alignment = 1
+vertical_alignment = 1
