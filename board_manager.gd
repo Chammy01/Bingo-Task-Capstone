@@ -115,14 +115,10 @@ func _ready():
 
 func _init_notifications():
 	"""Initialize NotificationManager based on current board state"""
-	var total = tiles.size()
+	var tasks_with_text = _count_tasks_with_text()
 	var completed = _count_completed_tasks()
-	var has_tasks = _count_tasks_with_text() > 0
-	
-	if has_tasks:
-		NotificationManager.on_board_loaded(total, completed)
-	else:
-		NotificationManager.on_board_loaded(0, 0)
+	# Pass actual task counts - NotificationManager handles the logic
+	NotificationManager.on_board_loaded(tasks_with_text, completed)
 
 func _is_empty_task(text: String) -> bool:
 	"""Check if a task text is empty or placeholder"""

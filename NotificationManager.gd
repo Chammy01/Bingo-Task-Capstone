@@ -438,24 +438,28 @@ func _check_deadline_warnings(elapsed: float, deadline: float):
 	var threshold_5min = get_interval(DEADLINE_5MIN_PROD, DEADLINE_5MIN_DEBUG)
 	var threshold_1min = get_interval(DEADLINE_1MIN_PROD, DEADLINE_1MIN_DEBUG)
 	
-	# 5-minute warning
+	# Ensure proper ordering (5min threshold should always be > 1min threshold)
+	# In debug mode: 5min=30s, 1min=15s (correct order)
+	# In prod mode: 5min=300s, 1min=60s (correct order)
+	
+	# 5-minute warning (fires when remaining is between 5min threshold and 1min threshold)
 	if remaining <= threshold_5min and remaining > threshold_1min and not deadline_5min_warning_shown:
 		deadline_5min_warning_shown = true
 		_show_notification("⏰ Deadline Approaching!", "⏰ 5 minutes left to complete your session!")
-		print("🔔 Deadline 5-min warning fired")
+		print("🔔 Deadline 5-min warning fired (remaining: %.1fs)" % remaining)
 	
-	# 1-minute warning
+	# 1-minute warning (fires when remaining is below 1min threshold but not expired)
 	if remaining <= threshold_1min and remaining > 0 and not deadline_1min_warning_shown:
 		deadline_1min_warning_shown = true
 		_show_notification("⏰ Almost Time!", "⏰ Only 1 minute remaining! Finish strong!")
-		print("🔔 Deadline 1-min warning fired")
+		print("🔔 Deadline 1-min warning fired (remaining: %.1fs)" % remaining)
 	
-	# Expired
+	# Expired (fires when deadline is reached)
 	if remaining <= 0 and not deadline_expired_shown:
 		deadline_expired_shown = true
 		_show_notification("⏰ Time's Up!", "⏰ Time's up! Session deadline reached.")
 		print("🔔 Deadline expired notification fired")
-		stop_deadline_tracking()
+		pause_deadline_tracking()
 
 # ============================================
 # BOARD INTEGRATION CALLBACKS
