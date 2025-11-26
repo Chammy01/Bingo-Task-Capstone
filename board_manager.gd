@@ -124,11 +124,15 @@ func _init_notifications():
 	else:
 		NotificationManager.on_board_loaded(0, 0)
 
+func _is_empty_task(text: String) -> bool:
+	"""Check if a task text is empty or placeholder"""
+	return text == "" or text == EMPTY_TASK_PLACEHOLDER
+
 func _count_tasks_with_text() -> int:
 	"""Count tiles that have task text"""
 	var count = 0
 	for tile in tiles:
-		if tile.task_label.text != "" and tile.task_label.text != EMPTY_TASK_PLACEHOLDER:
+		if not _is_empty_task(tile.task_label.text):
 			count += 1
 	return count
 
@@ -183,7 +187,7 @@ func _save_scheduled_tasks_for_date():
 	
 	for tile in tiles:
 		var task_text = tile.task_label.text
-		if task_text != "" and task_text != EMPTY_TASK_PLACEHOLDER:
+		if not _is_empty_task(task_text):
 			tasks_for_date.append(task_text)
 	
 	scheduled_tasks = SaveManager.load_scheduled_tasks()
@@ -457,7 +461,7 @@ func on_tile_edit_requested(tile_to_edit):
 	var was_cancelled = result[1]
 	
 	if not was_cancelled:
-		var was_empty = current_text == "" or current_text == EMPTY_TASK_PLACEHOLDER
+		var was_empty = _is_empty_task(current_text)
 		tile_to_edit.set_task_text(new_task_text)
 		
 		if is_scheduling_mode:

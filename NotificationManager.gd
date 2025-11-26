@@ -118,7 +118,7 @@ func toggle_debug_mode():
 	debug_mode = not debug_mode
 	SaveManager.set_setting("notification_debug_mode", debug_mode)
 	
-	if is_instance_valid(Toast):
+	if Toast != null:
 		if debug_mode:
 			Toast.show_toast("🧪 Debug Mode: ON", 2.0)
 		else:
@@ -304,6 +304,8 @@ func _get_progress_message(percentage: int) -> String:
 
 # ============================================
 # DAILY TASK REMINDERS (6 AM & 6 PM)
+# NOTE: This feature logs scheduling intent. Full system notification
+# functionality requires the godot-notification-scheduler plugin.
 # ============================================
 
 func schedule_daily_reminders_for_date(date_key: String, task_count: int):
@@ -325,10 +327,11 @@ func schedule_daily_reminders_for_date(date_key: String, task_count: int):
 	
 	var message = "You have %d task(s) scheduled for today. Let's get started!" % task_count
 	
-	# Generate unique IDs for this date
-	var date_hash = date_key.hash() % 1000
-	var am_id = str(NOTIFICATION_ID_DAILY_AM_BASE + date_hash)
-	var pm_id = str(NOTIFICATION_ID_DAILY_PM_BASE + date_hash)
+	# Generate unique IDs for this date using the date string directly
+	# Format: base_id + YYYYMMDD to avoid hash collisions
+	var date_num = date_key.replace("-", "")
+	var am_id = "%d_%s" % [NOTIFICATION_ID_DAILY_AM_BASE, date_num]
+	var pm_id = "%d_%s" % [NOTIFICATION_ID_DAILY_PM_BASE, date_num]
 	
 	# Schedule 6 AM notification
 	_schedule_notification_at_time(6, 0, date, "🌅 Morning Tasks!", message, am_id)
@@ -347,7 +350,7 @@ func cancel_daily_reminders_for_date(date_key: String):
 	
 	var ids = scheduled_notification_ids[date_key]
 	for notification_id in ids:
-		# Cancel notification (plugin integration placeholder)
+		# TODO: Integrate with godot-notification-scheduler plugin for actual cancellation
 		print("  🔕 Cancelled notification ID: %s" % notification_id)
 	
 	scheduled_notification_ids.erase(date_key)
@@ -375,8 +378,8 @@ func _schedule_notification_at_time(hour: int, minute: int, date: Dictionary, ti
 		])
 		return
 	
-	# For actual implementation, this would use the godot-notification-scheduler plugin
-	# For now, we'll log the scheduling and use in-app notifications
+	# TODO: Integrate with godot-notification-scheduler plugin for actual scheduling
+	# Currently logs the scheduling intent for future implementation
 	print("  📅 Scheduled: %s at %02d:%02d (in %d seconds)" % [
 		"%04d-%02d-%02d" % [date.year, date.month, date.day], hour, minute, delay_seconds
 	])
@@ -520,7 +523,7 @@ func on_session_stopped():
 
 func _show_notification(title: String, message: String):
 	"""Display notification using Toast system"""
-	if is_instance_valid(Toast):
+	if Toast != null:
 		Toast.show_toast("%s\n%s" % [title, message], 3.0)
 	else:
 		print("🔔 NOTIFICATION: %s - %s" % [title, message])
