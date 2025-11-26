@@ -177,29 +177,39 @@ func _input(event):
 		_handle_touch(event)
 
 func _handle_touch(event: InputEventScreenTouch):
+	var current_time = Time.get_ticks_msec() / 1000.0
+	
 	if event.pressed:
+		# Touch started - record it
 		active_touches[event.index] = {
-			"time": Time.get_ticks_msec() / 1000.0,
+			"time": current_time,
 			"position": event.position
 		}
+		
+		# Check if we now have exactly 3 simultaneous touches
+		if active_touches.size() == 3:
+			# Verify all touches are within the time window
+			var all_recent = true
+			for touch_data in active_touches.values():
+				if current_time - touch_data.time > THREE_FINGER_TAP_WINDOW:
+					all_recent = false
+					break
+			
+			if all_recent:
+				toggle_debug_mode()
+				active_touches.clear()
 	else:
-		# Touch released - check if we have 3 fingers within the time window
+		# Touch released - remove from tracking
 		if event.index in active_touches:
 			active_touches.erase(event.index)
 		
-		# Check for 3-finger tap
-		if active_touches.size() == 2:  # We just released the 3rd finger
-			var current_time = Time.get_ticks_msec() / 1000.0
-			var valid_touches = 0
-			
-			for touch_data in active_touches.values():
-				if current_time - touch_data.time < THREE_FINGER_TAP_WINDOW:
-					valid_touches += 1
-			
-			# If we had 3 touches within the window, toggle debug
-			if valid_touches >= 2:
-				toggle_debug_mode()
-				active_touches.clear()
+		# Clean up old touches that are outside the time window
+		var touches_to_remove = []
+		for index in active_touches.keys():
+			if current_time - active_touches[index].time > THREE_FINGER_TAP_WINDOW:
+				touches_to_remove.append(index)
+		for index in touches_to_remove:
+			active_touches.erase(index)
 
 # ============================================
 # NO TASKS ADDED NOTIFICATION
