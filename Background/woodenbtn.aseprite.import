@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://wexnxa8ope1n"
+path="res://.godot/imported/woodenbtn.aseprite-8fe244a5a4e520937612a07c46b18a77.res"
+
+[deps]
+
+source_file="res://Background/woodenbtn.aseprite"
+dest_files=["res://.godot/imported/woodenbtn.aseprite-8fe244a5a4e520937612a07c46b18a77.res"]
+
+[params]
+
