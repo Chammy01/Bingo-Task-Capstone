@@ -407,7 +407,7 @@ func _debug_log(message: String):
 func set_debug_mode(enabled: bool):
 	debug_mode = enabled
 	SaveManager.set_setting("notification_debug_mode", enabled)
-	_debug_log("Debug mode %s" % ("enabled" % "" if enabled else "disabled"))
+	_debug_log("Debug mode %s" % ("enabled" if enabled else "disabled"))
 	
 	# Reschedule notifications with new intervals if currently scheduled
 	if has_tasks and not has_completed_task:
@@ -417,3 +417,17 @@ func set_debug_mode(enabled: bool):
 
 func get_debug_mode() -> bool:
 	return debug_mode
+
+# ============================================
+# DEBUG INPUT HANDLER
+# ============================================
+
+func _input(event):
+	"""Handle keyboard shortcuts for debug mode toggle"""
+	if event is InputEventKey and event.pressed:
+		# Ctrl+Shift+N to toggle notification debug mode
+		if event.keycode == KEY_N and event.ctrl_pressed and event.shift_pressed:
+			set_debug_mode(not debug_mode)
+			var status = "ENABLED" if debug_mode else "DISABLED"
+			Toast.show_toast("🔔 Notification Debug Mode %s" % status, 2.0)
+			print("🔔 Notification debug mode toggled: %s" % status)
