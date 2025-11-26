@@ -355,7 +355,7 @@ func _schedule_notification(id: int, title: String, content: String, delay: int,
 	
 	if result == OK:
 		_debug_log("✓ Scheduled notification ID=%d, delay=%ds, interval=%ds" % [id, delay, interval])
-		if debug_mode and Toast:
+		if debug_mode and is_instance_valid(Toast):
 			Toast.show_toast("🔔 Notification scheduled (ID: %d)" % id, 2.0)
 	else:
 		_debug_log("⚠️ Failed to schedule notification ID=%d: %d" % [id, result])
@@ -368,7 +368,7 @@ func _cancel_notification(id: int):
 	
 	if result == OK:
 		_debug_log("✓ Cancelled notification ID=%d" % id)
-		if debug_mode and Toast:
+		if debug_mode and is_instance_valid(Toast):
 			Toast.show_toast("🔕 Notification cancelled (ID: %d)" % id, 2.0)
 	else:
 		_debug_log("⚠️ Failed to cancel notification ID=%d: %d" % [id, result])
@@ -429,6 +429,6 @@ func _input(event):
 		if event.keycode == KEY_N and event.ctrl_pressed and event.shift_pressed:
 			set_debug_mode(not debug_mode)
 			var status = "ENABLED" if debug_mode else "DISABLED"
-			if Toast:
+			if is_instance_valid(Toast):
 				Toast.show_toast("🔔 Notification Debug Mode %s" % status, 2.0)
 			print("🔔 Notification debug mode toggled: %s" % status)
