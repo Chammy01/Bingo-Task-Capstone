@@ -445,14 +445,16 @@ func _check_deadline_warnings(elapsed: float, deadline: float):
 	# 5-minute warning (fires when remaining is between 5min threshold and 1min threshold)
 	if remaining <= threshold_5min and remaining > threshold_1min and not deadline_5min_warning_shown:
 		deadline_5min_warning_shown = true
-		_show_notification("⏰ Deadline Approaching!", "⏰ 5 minutes left to complete your session!")
-		print("🔔 Deadline 5-min warning fired (remaining: %.1fs)" % remaining)
+		var time_text = _format_time_remaining(threshold_5min)
+		_show_notification("⏰ Deadline Approaching!", "⏰ %s left to complete your session!" % time_text)
+		print("🔔 Deadline warning fired (threshold: %ds, remaining: %.1fs)" % [threshold_5min, remaining])
 	
 	# 1-minute warning (fires when remaining is below 1min threshold but not expired)
 	if remaining <= threshold_1min and remaining > 0 and not deadline_1min_warning_shown:
 		deadline_1min_warning_shown = true
-		_show_notification("⏰ Almost Time!", "⏰ Only 1 minute remaining! Finish strong!")
-		print("🔔 Deadline 1-min warning fired (remaining: %.1fs)" % remaining)
+		var time_text = _format_time_remaining(threshold_1min)
+		_show_notification("⏰ Almost Time!", "⏰ Only %s remaining! Finish strong!" % time_text)
+		print("🔔 Deadline final warning fired (threshold: %ds, remaining: %.1fs)" % [threshold_1min, remaining])
 	
 	# Expired (fires when deadline is reached)
 	if remaining <= 0 and not deadline_expired_shown:
@@ -460,6 +462,21 @@ func _check_deadline_warnings(elapsed: float, deadline: float):
 		_show_notification("⏰ Time's Up!", "⏰ Time's up! Session deadline reached.")
 		print("🔔 Deadline expired notification fired")
 		pause_deadline_tracking()
+
+func _format_time_remaining(seconds: int) -> String:
+	"""Format seconds into human-readable time string"""
+	if seconds >= 60:
+		@warning_ignore("integer_division")
+		var minutes = seconds / 60
+		if minutes == 1:
+			return "1 minute"
+		else:
+			return "%d minutes" % minutes
+	else:
+		if seconds == 1:
+			return "1 second"
+		else:
+			return "%d seconds" % seconds
 
 # ============================================
 # BOARD INTEGRATION CALLBACKS
