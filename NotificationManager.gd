@@ -79,13 +79,10 @@ const SAVE_KEY_DEBUG_MODE = "notif_debug_mode"
 # ============================================
 
 func _ready():
-	# Check for debug mode
-	debug_mode = OS.is_debug_build()
-	
 	# Try to load the notification scheduler plugin
 	_init_notification_scheduler()
 	
-	# Load persisted state
+	# Load persisted state (includes debug mode)
 	_load_state()
 	
 	# Schedule initial notifications based on current state
@@ -118,6 +115,8 @@ func _schedule_initial_notifications():
 # INPUT HANDLING (Debug Mode Toggle)
 # ============================================
 
+var _touch_count: int = 0
+
 func _input(event):
 	# Desktop: Ctrl+Shift+N to toggle debug mode
 	if event is InputEventKey and event.pressed:
@@ -126,13 +125,8 @@ func _input(event):
 	
 	# Mobile: 3-finger tap to toggle debug mode
 	if event is InputEventScreenTouch:
-		if event.pressed and _count_touches() >= 3:
+		if event.pressed and _touch_count >= 3:
 			_toggle_debug_mode()
-
-var _touch_count: int = 0
-
-func _count_touches() -> int:
-	return _touch_count
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_APPLICATION_PAUSED:
@@ -259,8 +253,7 @@ func schedule_daily_reminders(date_key: String, task_count: int):
 	var month = int(parts[1])
 	var day = int(parts[2])
 	
-	# Generate unique IDs for this date
-	var date_hash = _get_date_hash(date_key)
+	# Generate unique string IDs for this date
 	var am_id = "%d_%s" % [ID_DAILY_AM_BASE, date_key.replace("-", "")]
 	var pm_id = "%d_%s" % [ID_DAILY_PM_BASE, date_key.replace("-", "")]
 	
@@ -488,10 +481,6 @@ func _get_interval(prod_interval: float, debug_interval: float) -> float:
 	"""Get appropriate interval based on debug mode"""
 	return debug_interval if debug_mode else prod_interval
 
-func _get_date_hash(date_key: String) -> int:
-	"""Generate a hash for date-based notification IDs"""
-	return date_key.hash() % 10000
-
 func _get_timestamp_for_datetime(year: int, month: int, day: int, hour: int, minute: int, second: int) -> float:
 	"""Convert datetime components to Unix timestamp"""
 	var datetime = {
@@ -537,10 +526,12 @@ func _load_state():
 	completed_tasks = SaveManager.get_setting(SAVE_KEY_COMPLETED_TASKS, 0)
 	last_completion_time = SaveManager.get_setting(SAVE_KEY_LAST_COMPLETION, 0.0)
 	
-	# Load debug mode but override with OS check if in debug build
-	var saved_debug = SaveManager.get_setting(SAVE_KEY_DEBUG_MODE, false)
+	# Debug mode: use saved state if in debug build, otherwise default to false
+	# This allows developers to toggle debug mode and have it persist across restarts
 	if OS.is_debug_build():
-		debug_mode = saved_debug
+		debug_mode = SaveManager.get_setting(SAVE_KEY_DEBUG_MODE, OS.is_debug_build())
+	else:
+		debug_mode = false
 	
 	print("  Loaded state: has_tasks=%s, total=%d, completed=%d" % [has_tasks, total_tasks, completed_tasks])
 
