@@ -426,8 +426,7 @@ func _get_progress_message() -> String:
 	if total_tasks <= 0:
 		return "Let's get started—your tasks await!"
 	
-	@warning_ignore("integer_division")
-	var percent = (completed_tasks * 100) / total_tasks
+	var percent = int((completed_tasks * 100.0) / total_tasks)
 	
 	if percent == 0:
 		return "Let's get started—your tasks await!"
@@ -446,8 +445,8 @@ func _schedule_notification(id: String, title: String, message: String, delay_se
 		print("⚠️ No notification scheduler available")
 		return
 	
-	# Convert string ID to int for the plugin
-	var int_id = id.hash() % 100000
+	# Convert string ID to int for the plugin (use larger modulo to reduce collision risk)
+	var int_id = abs(id.hash()) % 2147483647  # Max int32 range
 	
 	if plugin_available:
 		# Use actual plugin
@@ -478,7 +477,7 @@ func cancel_notification(id: int):
 
 func cancel_notification_by_string_id(id: String):
 	"""Cancel a notification by string ID"""
-	var int_id = id.hash() % 100000
+	var int_id = abs(id.hash()) % 2147483647
 	cancel_notification(int_id)
 
 # ============================================
@@ -562,7 +561,7 @@ class NotificationStub:
 			"repeating": repeating,
 			"scheduled_at": Time.get_unix_time_from_system()
 		}
-		print("    [STUB] Scheduled: %s - %s (delay: %ds, repeat: %s)" % [title, message.substr(0, 30), delay_seconds, repeating])
+		print("    [STUB] Scheduled: %s - %s (delay: %ds, repeat: %s)" % [title, message.left(30), delay_seconds, repeating])
 	
 	func cancel(id: int):
 		if scheduled_notifications.has(id):

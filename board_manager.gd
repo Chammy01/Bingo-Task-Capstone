@@ -37,6 +37,8 @@ const CALENDAR_POPUP = preload("res://CalendarPopup.tscn")
 # VARIABLES
 # ============================================
 
+const EMPTY_TASK_PLACEHOLDER = "Tap to add task"
+
 var tiles: Array = []
 var scheduled_tasks: Dictionary = {}
 var is_scheduling_mode: bool = false
@@ -162,7 +164,7 @@ func _save_scheduled_tasks_for_date():
 	
 	for tile in tiles:
 		var task_text = tile.task_label.text
-		if task_text != "" and task_text != "Tap to add task":
+		if task_text != "" and task_text != EMPTY_TASK_PLACEHOLDER:
 			tasks_for_date.append(task_text)
 	
 	scheduled_tasks = SaveManager.load_scheduled_tasks()
@@ -431,7 +433,7 @@ func on_tile_edit_requested(tile_to_edit):
 	get_tree().root.add_child(popup)
 	var current_text = tile_to_edit.task_label.text
 	var current_texture = tile_to_edit.get_current_texture()
-	var was_empty = (current_text == "" or current_text == "Tap to add task")
+	var was_empty = (current_text == "" or current_text == EMPTY_TASK_PLACEHOLDER)
 	popup.popup(current_text, current_texture)
 	var result = await popup.task_confirmed
 	var new_task_text = result[0]
@@ -446,7 +448,7 @@ func on_tile_edit_requested(tile_to_edit):
 		else:
 			save_all_tasks()
 			# Notify NotificationManager if a new task was added (was empty, now has content)
-			var is_new_task = was_empty and new_task_text != "" and new_task_text != "Tap to add task"
+			var is_new_task = was_empty and new_task_text != "" and new_task_text != EMPTY_TASK_PLACEHOLDER
 			if is_new_task:
 				NotificationManager.on_task_added()
 			_update_notification_progress()
@@ -554,7 +556,7 @@ func _count_total_tasks() -> int:
 	var count = 0
 	for tile in tiles:
 		var task_text = tile.task_label.text
-		if task_text != "" and task_text != "Tap to add task":
+		if task_text != "" and task_text != EMPTY_TASK_PLACEHOLDER:
 			count += 1
 	return count
 
