@@ -83,6 +83,10 @@ func start_session() -> void:
 	deadline_expired_shown = false
 	
 	session_started.emit()
+	
+	# Notify NotificationManager about session start with deadline
+	NotificationManager.on_session_started(TASK_DEADLINE)
+	
 	print("✓ Session started")
 
 func pause_session() -> void:
@@ -94,6 +98,9 @@ func pause_session() -> void:
 	print("⏸ Pausing session...")
 	session_pause_time = Time.get_unix_time_from_system()
 	session_state = SessionState.PAUSED
+	
+	# Notify NotificationManager about session pause
+	NotificationManager.on_session_paused()
 	
 	session_paused.emit()
 
@@ -107,6 +114,11 @@ func resume_session() -> void:
 	var pause_duration = Time.get_unix_time_from_system() - session_pause_time
 	total_paused_time += pause_duration
 	session_state = SessionState.RUNNING
+	
+	# Calculate remaining time and notify NotificationManager
+	var elapsed = get_session_elapsed_time()
+	var remaining = max(0, TASK_DEADLINE - elapsed)
+	NotificationManager.on_session_resumed(remaining)
 	
 	session_resumed.emit()
 
@@ -123,6 +135,9 @@ func stop_session() -> void:
 	# Reset deadline tracking
 	deadline_warning_shown = false
 	deadline_expired_shown = false
+	
+	# Notify NotificationManager about session stop
+	NotificationManager.on_session_stopped()
 	
 	print("✓ Session ended. Total time: %s" % format_time(final_time))
 	

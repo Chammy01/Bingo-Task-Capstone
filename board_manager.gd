@@ -105,6 +105,10 @@ func _ready():
 	_update_timer_display(SessionManager.get_session_elapsed_time())
 	_update_progress_display()
 	
+	# Initialize NotificationManager with current task state (deferred to ensure it's loaded)
+	if not is_scheduling_mode:
+		call_deferred("_update_notification_progress")
+	
 	print("✓ BoardManager initialized (Scheduling Mode: %s)" % is_scheduling_mode)
 
 # ============================================
@@ -169,9 +173,13 @@ func _save_scheduled_tasks_for_date():
 	if tasks_for_date.size() > 0:
 		scheduled_tasks[date_key] = tasks_for_date
 		print("✓ Saved %d tasks for %s" % [tasks_for_date.size(), date_key])
+		# Schedule daily reminders for this date
+		NotificationManager.schedule_daily_reminders(date_key, tasks_for_date.size())
 	else:
 		scheduled_tasks.erase(date_key)
 		print("✓ Removed empty schedule for %s" % date_key)
+		# Cancel daily reminders for this date
+		NotificationManager.cancel_daily_reminders(date_key)
 	
 	if SaveManager.save_scheduled_tasks(scheduled_tasks):
 		print("✓ Scheduled tasks file updated (%d dates)" % scheduled_tasks.size())
@@ -242,6 +250,8 @@ func _load_and_apply_today_scheduled_tasks():
 		if not is_debug_mode:
 			scheduled_tasks.erase(today_key)
 			SaveManager.save_scheduled_tasks(scheduled_tasks)
+			# Cancel daily reminders for today since tasks are now loaded
+			NotificationManager.cancel_daily_reminders(today_key)
 			print("✓ Loaded and removed today's tasks")
 		else:
 			print("🧪 Debug mode: Loaded tasks but keeping them in schedule")
@@ -255,6 +265,8 @@ func _load_and_apply_today_scheduled_tasks():
 				Toast.show_toast("📅 Loaded %d task(s) for today!" % tasks_for_today.size(), 2.0)
 			if not is_debug_mode:
 				save_all_tasks()
+				# Update notification progress with new task count
+				_update_notification_progress()
 	else:
 		print("  No scheduled tasks for %s" % today_key)
 		if is_debug_mode:
@@ -419,6 +431,7 @@ func on_tile_edit_requested(tile_to_edit):
 	get_tree().root.add_child(popup)
 	var current_text = tile_to_edit.task_label.text
 	var current_texture = tile_to_edit.get_current_texture()
+	var was_empty = (current_text == "" or current_text == "Tap to add task")
 	popup.popup(current_text, current_texture)
 	var result = await popup.task_confirmed
 	var new_task_text = result[0]
@@ -432,6 +445,11 @@ func on_tile_edit_requested(tile_to_edit):
 			print("✓ Auto-saved scheduled tasks after edit")
 		else:
 			save_all_tasks()
+			# Notify NotificationManager if a new task was added (was empty, now has content)
+			var is_new_task = was_empty and new_task_text != "" and new_task_text != "Tap to add task"
+			if is_new_task:
+				NotificationManager.on_task_added()
+			_update_notification_progress()
 		
 		print("✓ Task updated: %s" % new_task_text)
 
@@ -469,6 +487,10 @@ func _on_tile_complete_requested(tile):
 	tile.mark_as_completed()
 	BadgeManager.increment_tasks()
 	_update_progress_display()
+	
+	# Notify NotificationManager about task completion
+	NotificationManager.on_task_completed()
+	_update_notification_progress()
 	
 	var row_complete = tile._check_row_complete()
 	var col_complete = tile._check_column_complete()
@@ -527,6 +549,23 @@ func _count_completed_tasks() -> int:
 			count += 1
 	return count
 
+func _count_total_tasks() -> int:
+	"""Count total non-empty tasks on the board"""
+	var count = 0
+	for tile in tiles:
+		var task_text = tile.task_label.text
+		if task_text != "" and task_text != "Tap to add task":
+			count += 1
+	return count
+
+func _update_notification_progress():
+	"""Update NotificationManager with current task progress"""
+	if is_scheduling_mode:
+		return
+	var total = _count_total_tasks()
+	var completed = _count_completed_tasks()
+	NotificationManager.update_progress(total, completed)
+
 # ============================================
 # SESSION CONTROL BUTTONS
 # ============================================
@@ -562,6 +601,8 @@ func _on_reset_button_pressed():
 		_save_scheduled_tasks_for_date()
 	else:
 		save_all_tasks()
+		# Reset notification state since board was cleared
+		NotificationManager.reset_all()
 	
 	_update_progress_display()
 	Toast.show_toast("↺ Board cleared!", 1.5)
@@ -633,6 +674,8 @@ func _on_tile_changed(_tile):
 	else:
 		save_all_tasks()
 		_update_progress_display()
+		# Update NotificationManager with current progress
+		_update_notification_progress()
 
 # ============================================
 # SOUND EFFECTS
