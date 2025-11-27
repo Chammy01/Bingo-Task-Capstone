@@ -16,6 +16,9 @@ const ID_DEADLINE_5MIN = 6000
 const ID_DEADLINE_1MIN = 6001
 const ID_DEADLINE_EXPIRED = 6002
 
+# Max value for notification ID to reduce hash collisions
+const MAX_NOTIFICATION_ID = 2147483647
+
 # ============================================
 # TIME INTERVALS (Production vs Debug)
 # ============================================
@@ -38,6 +41,9 @@ const DEBUG_DEADLINE_EXPIRED = 10        # 10 seconds
 # Daily reminder times (hours in 24h format)
 const DAILY_AM_HOUR = 6   # 6:00 AM
 const DAILY_PM_HOUR = 18  # 6:00 PM
+
+# Debug output truncation
+const DEBUG_MESSAGE_TRUNCATE_LENGTH = 30
 
 # ============================================
 # NO TASKS MESSAGES
@@ -438,8 +444,8 @@ func _schedule_notification(id: String, title: String, message: String, delay_se
 		print("⚠️ No notification scheduler available")
 		return
 	
-	# Convert string ID to int for the plugin (use larger modulo to reduce collision risk)
-	var int_id = abs(id.hash()) % 2147483647  # Max int32 range
+	# Convert string ID to int for the plugin
+	var int_id = abs(id.hash()) % MAX_NOTIFICATION_ID
 	
 	if plugin_available:
 		# Use actual plugin
@@ -470,7 +476,7 @@ func cancel_notification(id: int):
 
 func cancel_notification_by_string_id(id: String):
 	"""Cancel a notification by string ID"""
-	var int_id = abs(id.hash()) % 2147483647
+	var int_id = abs(id.hash()) % MAX_NOTIFICATION_ID
 	cancel_notification(int_id)
 
 # ============================================
