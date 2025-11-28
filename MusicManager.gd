@@ -44,6 +44,20 @@ const MUSIC_CATALOG = {
 		"price": 0,
 		"owned": true,
 		"background_theme": "default"  # NEW: Default background
+	},
+	"Autumn": {
+		"name": "Autumn",
+		"file": "res://music/autumn.mp3",
+		"price": 200,
+		"owned": false,
+		"background_theme": "theme_autumn"
+	},
+	"Snowy": {
+		"name": "Snowy",
+		"file": "res://music/snowy.mp3",
+		"price": 250,
+		"owned": false,
+		"background_theme": "theme_snowy"
 	}
 }
 

@@ -32,6 +32,7 @@ Toast="*res://Toast.tscn"
 BadgeManager="*res://BadgeManager.gd"
 MusicManager="*res://MusicManager.gd"
 ThemeManager="*res://ThemeManager.gd"
+NotificationManager="*res://NotificationManager.gd"
 
 [display]
 
@@ -44,7 +45,7 @@ window/handheld/orientation=1
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AsepriteWizard/plugin.cfg", "res://addons/texture_fonts/plugin.cfg")
+enabled=PackedStringArray("res://addons/AsepriteWizard/plugin.cfg", "res://addons/NotificationSchedulerPlugin/plugin.cfg", "res://addons/texture_fonts/plugin.cfg")
 
 [gui]
 
