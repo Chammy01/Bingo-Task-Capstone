@@ -8,7 +8,7 @@ var tracks = [
 		"atlas": "res://Background/woodenbtn.png",
 		"region": Rect2(0, 627, 147, 202),
 		"is_owned": false,
-		"background_theme": "theme_sakura"
+		"background_theme": "theme_blossom"
 	},
 	{
 		"id": "Valley",
@@ -40,9 +40,25 @@ var tracks = [
 		"id": "Autumn",
 		"name": "Autumn Fall",
 		"price": 200,
-		"atlas": "res://Background/woodenbtn.png"
+		"atlas": "res://Background/woodenbtn.png",
+		"region": Rect2(0, 0, 64, 64),
+		"is_owned": false,
+		"background_theme": "theme_autumn"
+	},
+	{
+		"id": "Snowy",
+		"name": "Winter Chill",
+		"price": 250,
+		"atlas": "res://Background/woodenbtn.png",
+		"region": Rect2(0, 0, 64, 64),
+		"is_owned": false,
+		"background_theme": "theme_snowy"
 	}
 ]
+
+# Pagination variables
+var current_page: int = 0
+var cards_per_page: int = 4
 
 const SETTINGS_POPUP = preload("res://SettingsPopup.tscn")
 
@@ -53,6 +69,8 @@ const SETTINGS_POPUP = preload("res://SettingsPopup.tscn")
 @onready var popup = $MusicPreviewPopup
 @onready var button_sound: AudioStreamPlayer = $ButtonSound
 @onready var back_button: TextureButton = $BackButton
+@onready var prev_button: TextureButton = $PrevButton
+@onready var next_button: TextureButton = $NextButton
 
 func _ready():
 	super._ready()  # Call base _ready() first for background
@@ -66,6 +84,8 @@ func _ready():
 	print("Card4: %s" % (card4 != null))
 	print("Popup: %s" % (popup != null))
 	print("BackButton: %s" % (back_button != null))
+	print("PrevButton: %s" % (prev_button != null))
+	print("NextButton: %s" % (next_button != null))
 	
 	if not popup:
 		push_error("❌ MusicPreviewPopup not found! Did you instance it in the scene?")
@@ -82,6 +102,9 @@ func _ready():
 	popup.purchase_failed.connect(_on_purchase_failed)
 	popup.preview_playing.connect(_on_preview_playing)
 	popup.popup_closed.connect(_on_popup_closed)
+	
+	# Update pagination button visibility
+	_update_pagination_buttons()
 	
 	print("✓ Shop ready!")
 
@@ -110,13 +133,24 @@ func _apply_audio_settings():
 
 func _setup_cards():
 	var cards = [card1, card2, card3, card4]
+	var start_index = current_page * cards_per_page
+	
 	for i in range(cards.size()):
 		var card = cards[i]
-		var data = tracks[i]
-		data.is_owned = MusicManager.is_owned(data.id)
-		data.is_current = MusicManager.current_track == data.id
-		if card and card.has_method("setup"):
-			card.setup(data)
+		var track_index = start_index + i
+		
+		if track_index < tracks.size():
+			var data = tracks[track_index]
+			data.is_owned = MusicManager.is_owned(data.id)
+			data.is_current = MusicManager.current_track == data.id
+			if card:
+				card.visible = true
+				if card.has_method("setup"):
+					card.setup(data)
+		else:
+			# Hide cards that don't have data on this page
+			if card:
+				card.visible = false
 
 func _connect_signals():
 	print("--- Connecting card signals ---")
@@ -177,3 +211,32 @@ func _on_back_pressed() -> void:
 	print("⬅️ Back button pressed")
 	button_sound.play()
 	get_tree().change_scene_to_file("res://main_menu.tscn")
+
+func _get_total_pages() -> int:
+	return ceili(float(tracks.size()) / float(cards_per_page))
+
+func _update_pagination_buttons():
+	var total_pages = _get_total_pages()
+	
+	if prev_button:
+		prev_button.visible = current_page > 0
+	
+	if next_button:
+		next_button.visible = current_page < total_pages - 1
+
+func _on_prev_pressed() -> void:
+	if current_page > 0:
+		button_sound.play()
+		current_page -= 1
+		_setup_cards()
+		_update_pagination_buttons()
+		print("📄 Page changed to: %d" % (current_page + 1))
+
+func _on_next_pressed() -> void:
+	var total_pages = _get_total_pages()
+	if current_page < total_pages - 1:
+		button_sound.play()
+		current_page += 1
+		_setup_cards()
+		_update_pagination_buttons()
+		print("📄 Page changed to: %d" % (current_page + 1))

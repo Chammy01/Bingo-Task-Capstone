@@ -24,7 +24,9 @@ var music_files = {
 	"Blossom": "res://music/Blossom.mp3",
 	"Valley": "res://music/Nature.mp3",
 	"Horizon": "res://music/Horizon.mp3",
-	"EveningGlow": "res://music/DefaultTrack.mp3"
+	"EveningGlow": "res://music/DefaultTrack.mp3",
+	"Autumn": "res://music/autumn.mp3",
+	"Snowy": "res://music/snowy.mp3"
 }
 
 var button_spritesheet = preload("res://Background/woodenbtn.png")
