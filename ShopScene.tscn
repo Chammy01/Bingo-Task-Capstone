@@ -127,6 +127,24 @@ offset_top = 421.0
 offset_right = 321.0
 offset_bottom = 623.0
 
+[node name="PrevButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 420.0
+offset_right = 56.0
+offset_bottom = 457.0
+texture_normal = SubResource("AtlasTexture_7mu51")
+texture_pressed = SubResource("AtlasTexture_ie3pg")
+
+[node name="NextButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 420.0
+offset_right = 360.0
+offset_bottom = 457.0
+texture_normal = SubResource("AtlasTexture_7mu51")
+texture_pressed = SubResource("AtlasTexture_ie3pg")
+
 [node name="MusicPreviewPopup" parent="." instance=ExtResource("10_jgpv2")]
 visible = false
 
@@ -210,5 +228,7 @@ metadata/_edit_use_anchors_ = true
 [node name="UpdateTimer" type="Timer" parent="Calendar"]
 
 [connection signal="pressed" from="BackButton" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="PrevButton" to="." method="_on_prev_pressed"]
+[connection signal="pressed" from="NextButton" to="." method="_on_next_pressed"]
 [connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]
 [connection signal="timeout" from="Calendar/UpdateTimer" to="Calendar" method="check_for_date_change"]
