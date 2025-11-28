@@ -163,3 +163,24 @@ func _apply_audio_settings():
 		AudioServer.set_bus_volume_db(sfx_bus_index, 0.0 if sfx_on else -80.0)
 	
 	print("✓ Audio settings applied: Music=%s, SFX=%s" % [music_on, sfx_on])
+	
+	# ======================
+	# NOTIFICATIONS
+	# ======================
+	
+	# Call this when your app starts (e.g., in _ready of main_menu.gd)
+func _request_notification_permissions():
+	if OS.get_name() == "Android":
+		# Check if we're on Android 13+ (API 33)
+		var os_version = OS.get_version()
+		print("Android version: %s" % os_version)
+		
+		# Request POST_NOTIFICATIONS permission (Android 13+)
+		if Engine.has_singleton("NotificationScheduler"):
+			var scheduler = Engine.get_singleton("NotificationScheduler")
+			
+			# The plugin should handle permission requests
+			# Check plugin documentation for exact method name
+			if scheduler.has_method("request_permission"):
+				scheduler.request_permission()
+				print("📱 Requested notification permission")

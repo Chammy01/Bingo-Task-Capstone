@@ -10,8 +10,9 @@ const BG_DEFAULT = preload("res://Background/default.png")
 const BG_GRASS = preload("res://Background/grass.png")
 const BG_CLOUD = preload("res://Background/cloud.png")
 const BG_SAKURA = preload("res://Background/sakura.png")
+const BG_AUTUMN = preload("res://Background/autumn.png")
+const BG_SNOWY = preload("res://Background/snowy.png")
 const SPRITE_SHEET = preload("res://Background/woodenbtn.png")
-
 var current_theme: String = "default"
 
 # Background paths - using preloaded resources
@@ -19,7 +20,9 @@ var theme_backgrounds = {
 	"default": BG_DEFAULT,
 	"theme_valley": BG_GRASS,
 	"theme_horizon": BG_CLOUD,
-	"theme_blossom": BG_SAKURA
+	"theme_blossom": BG_SAKURA,
+	"theme_snowy": BG_SNOWY,
+	"theme_autumn": BG_AUTUMN
 }
 
 # Decoration sprite sheet data - NOW USES PRELOADED RESOURCE INSTEAD OF STRING PATH
@@ -58,6 +61,22 @@ var theme_decoration_atlas = {
 			{"name": "sakura_branch1", "region": Rect2(1561, 580, 57, 19), "scale": 2.87},
 			{"name": "sakura_branch2", "region": Rect2(1561, 604, 51, 45), "scale": 2.92}
 		]
+	},
+	"theme_snowy": {
+		"sprite_sheet": SPRITE_SHEET,
+		"items": [
+			{"name": "Cinnamon", "region": Rect2(0, 0, 64, 64), "scale": 1.0},
+			{"name": "Gloves", "region": Rect2(64, 0, 64, 64), "scale": 1.0},
+			{"name": "Berries", "region": Rect2(128, 0, 64, 64), "scale": 1.0}
+		]
+	},
+	"theme_autumn": {
+		"spirte_sheet": SPRITE_SHEET,
+		"items": [
+			{"name": "Aster", "region": Rect2(0, 0, 64, 64), "scale": 1.0},
+			{"name": "Pine", "region": Rect2(64, 0, 64, 64), "scale": 1.0},
+			{"name": "Acorn", "region": Rect2(128, 0, 64, 64), "scale": 1.0}
+		]
 	}
 }
 
@@ -85,7 +104,9 @@ func get_theme_name(theme_id: String) -> String:
 		"default": "Default",
 		"theme_valley": "Grass Field",
 		"theme_horizon": "Cloud Sky",
-		"theme_blossom": "Cherry Blossom"
+		"theme_blossom": "Cherry Blossom",
+		"theme_autumn": "Autumn",
+		"theme_snowy": "Snowy"
 	}
 	return names.get(theme_id, "Unknown")
 

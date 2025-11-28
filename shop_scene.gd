@@ -4,7 +4,7 @@ var tracks = [
 	{
 		"id": "Blossom",
 		"name": "Japanese Chill",
-		"price": 100,
+		"price": 50,
 		"atlas": "res://Background/woodenbtn.png",
 		"region": Rect2(0, 627, 147, 202),
 		"is_owned": false,
@@ -13,7 +13,7 @@ var tracks = [
 	{
 		"id": "Valley",
 		"name": "Nature Vibes",
-		"price": 150,
+		"price": 100,
 		"atlas": "res://Background/woodenbtn.png",
 		"region": Rect2(153, 627, 147, 202),
 		"is_owned": false,
@@ -22,7 +22,7 @@ var tracks = [
 	{
 		"id": "Horizon",
 		"name": "Light Music",
-		"price": 200,
+		"price": 150,
 		"atlas": "res://Background/woodenbtn.png",
 		"region": Rect2(305, 627, 147, 202),
 		"is_owned": false,
@@ -35,6 +35,12 @@ var tracks = [
 		"region": Rect2(0, 834, 147, 202),
 		"is_owned": true,
 		"background_theme": "default"
+	},
+	{
+		"id": "Autumn",
+		"name": "Autumn Fall",
+		"price": 200,
+		"atlas": "res://Background/woodenbtn.png"
 	}
 ]
 

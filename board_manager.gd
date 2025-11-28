@@ -105,6 +105,10 @@ func _ready():
 	_update_timer_display(SessionManager.get_session_elapsed_time())
 	_update_progress_display()
 	
+	# Check notification state on startup
+	if not is_scheduling_mode:
+		NotificationManager.check_no_tasks_state()
+	
 	print("✓ BoardManager initialized (Scheduling Mode: %s)" % is_scheduling_mode)
 
 # ============================================
@@ -169,9 +173,13 @@ func _save_scheduled_tasks_for_date():
 	if tasks_for_date.size() > 0:
 		scheduled_tasks[date_key] = tasks_for_date
 		print("✓ Saved %d tasks for %s" % [tasks_for_date.size(), date_key])
+		# Schedule daily reminders for this date
+		NotificationManager.schedule_daily_reminders(date_key, tasks_for_date.size())
 	else:
 		scheduled_tasks.erase(date_key)
 		print("✓ Removed empty schedule for %s" % date_key)
+		# Cancel daily reminders for this date
+		NotificationManager.cancel_daily_reminders(date_key)
 	
 	if SaveManager.save_scheduled_tasks(scheduled_tasks):
 		print("✓ Scheduled tasks file updated (%d dates)" % scheduled_tasks.size())
@@ -308,28 +316,39 @@ func _on_theme_changed(_theme_id: String):
 
 func _update_decorations():
 	var decoration_data = ThemeManager.get_current_decorations()
+	
 	if decoration_data.size() == 0:
 		_hide_all_decorations()
 		return
+	
 	var sprite_sheet = decoration_data.get("sprite_sheet")
 	if not sprite_sheet or not sprite_sheet is Texture2D:
 		_hide_all_decorations()
 		return
+	
 	var items = decoration_data.get("items", [])
-	print("  📦 Applying %d decorations to %d nodes" % [items.size(), deco_nodes.size()])
+	print("  📦 Applying %d decorations to %d available nodes" % [items.size(), deco_nodes.size()])
+	
+	# Apply decorations to available nodes
 	for i in range(min(items.size(), deco_nodes.size())):
 		var deco = deco_nodes[i]
 		var item = items[i]
+		
 		var atlas_texture = AtlasTexture.new()
 		atlas_texture.atlas = sprite_sheet
 		atlas_texture.region = item.region
+		
 		deco.texture = atlas_texture
 		deco.scale = Vector2(item.scale, item.scale)
 		deco.visible = true
+		
 		print("    ✓ Deco%d: %s applied" % [i + 1, item.name])
+	
+	# Hide unused decoration nodes
 	for i in range(items.size(), deco_nodes.size()):
 		if deco_nodes[i]:
 			deco_nodes[i].visible = false
+			print("    ⚪ Deco%d: hidden" % [i + 1])
 
 func _hide_all_decorations():
 	for deco in deco_nodes:
@@ -432,6 +451,9 @@ func on_tile_edit_requested(tile_to_edit):
 			print("✓ Auto-saved scheduled tasks after edit")
 		else:
 			save_all_tasks()
+			# Notify when a task is added
+			if new_task_text != "" and new_task_text != "Tap to add task":
+				NotificationManager.on_task_added()
 		
 		print("✓ Task updated: %s" % new_task_text)
 
@@ -486,6 +508,11 @@ func _on_tile_complete_requested(tile):
 	
 	_check_badge_unlocks()
 	save_all_tasks()
+	
+	# Notify task completion
+	NotificationManager.on_task_completed()
+	var completed = _count_completed_tasks()
+	NotificationManager.update_progress(completed, tiles.size())
 
 # ============================================
 # BADGE UNLOCK CHECKING
@@ -597,6 +624,8 @@ func _update_progress_display():
 		var completed = _count_completed_tasks()
 		var total = tiles.size()
 		progress_label.text = "📋 %d/%d" % [completed, total]
+		# Update notification manager with progress
+		NotificationManager.update_progress(completed, total)
 
 # ============================================
 # SAVE/LOAD
