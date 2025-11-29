@@ -1,4 +1,4 @@
-// File: res://dissolve.gdshader (Updated Version)
+// File: res://shaders/dissolve.gdshader
 shader_type canvas_item;
 
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
