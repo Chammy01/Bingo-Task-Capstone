@@ -19,42 +19,42 @@ const SAVE_FILE = "user://music_library.save"
 const MUSIC_CATALOG = {
 	"Blossom": {
 		"name": "Blossom",
-		"file": "res://music/Blossom.mp3",
+		"file": "res://assets/audio/Blossom.mp3",
 		"price": 50,
 		"owned": false,
 		"background_theme": "theme_blossom"  # NEW: Links to sakura background
 	},
 	"Valley": {
 		"name": "Valley",
-		"file": "res://music/Nature.mp3",
+		"file": "res://assets/audio/Nature.mp3",
 		"price": 100,
 		"owned": false,
 		"background_theme": "theme_valley"  # NEW: Links to grass background
 	},
 	"Horizon": {
 		"name": "Horizon",
-		"file": "res://music/Horizon.mp3",
+		"file": "res://assets/audio/Horizon.mp3",
 		"price": 150,
 		"owned": false,
 		"background_theme": "theme_horizon"  # NEW: Links to cloud background
 	},
 	"DefaultTrack": {
 		"name": "DefaultTrack",
-		"file": "res://music/DefaultTrack.mp3",
+		"file": "res://assets/audio/DefaultTrack.mp3",
 		"price": 0,
 		"owned": true,
 		"background_theme": "default"  # NEW: Default background
 	},
 	"Autumn": {
 		"name": "Autumn",
-		"file": "res://music/autumn.mp3",
+		"file": "res://assets/audio/autumn.mp3",
 		"price": 200,
 		"owned": false,
 		"background_theme": "theme_autumn"
 	},
 	"Snowy": {
 		"name": "Snowy",
-		"file": "res://music/snowy.mp3",
+		"file": "res://assets/audio/snowy.mp3",
 		"price": 250,
 		"owned": false,
 		"background_theme": "theme_snowy"

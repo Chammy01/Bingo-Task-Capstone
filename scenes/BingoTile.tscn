@@ -1,13 +1,13 @@
 [gd_scene load_steps=22 format=3 uid="uid://306dme0mw16f"]
 
-[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="1_15ttv"]
-[ext_resource type="Script" uid="uid://c40pagyi8lhno" path="res://bingo_tile.gd" id="2_ljjvy"]
-[ext_resource type="FontFile" uid="uid://bv6uqh2mdmjvf" path="res://Fonts/Gaegu-Pixel(1).ttf" id="3_15ttv"]
-[ext_resource type="AudioStream" uid="uid://cei8t043b21bo" path="res://music/StickNote.mp3" id="4_ljjvy"]
-[ext_resource type="AudioStream" uid="uid://df8ovej1radbs" path="res://music/checkmark.mp3" id="5_dskfu"]
-[ext_resource type="AudioStream" uid="uid://cfr356e6lgkcm" path="res://music/eraser.mp3" id="6_j03kw"]
-[ext_resource type="FontFile" uid="uid://cwlcr0dm4kdvu" path="res://Fonts/ARCADECLASSIC.TTF" id="7_iqe3r"]
-[ext_resource type="Texture2D" uid="uid://ds687vyusnts4" path="res://CheckMark Animation/checkmark.png" id="8_iqe3r"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://assets/backgrounds/woodenbtn.png" id="1_15ttv"]
+[ext_resource type="Script" uid="uid://c40pagyi8lhno" path="res://scripts/ui/bingo_tile.gd" id="2_ljjvy"]
+[ext_resource type="FontFile" uid="uid://bv6uqh2mdmjvf" path="res://assets/fonts/Gaegu-Pixel(1).ttf" id="3_15ttv"]
+[ext_resource type="AudioStream" uid="uid://cei8t043b21bo" path="res://assets/audio/StickNote.mp3" id="4_ljjvy"]
+[ext_resource type="AudioStream" uid="uid://df8ovej1radbs" path="res://assets/audio/checkmark.mp3" id="5_dskfu"]
+[ext_resource type="AudioStream" uid="uid://cfr356e6lgkcm" path="res://assets/audio/eraser.mp3" id="6_j03kw"]
+[ext_resource type="FontFile" uid="uid://cwlcr0dm4kdvu" path="res://assets/fonts/ARCADECLASSIC.TTF" id="7_iqe3r"]
+[ext_resource type="Texture2D" uid="uid://ds687vyusnts4" path="res://assets/animations/checkmark.png" id="8_iqe3r"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dskfu"]
 atlas = ExtResource("1_15ttv")

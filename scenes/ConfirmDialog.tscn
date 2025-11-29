@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://c0yta1urpiv3c"]
 
-[ext_resource type="Script" uid="uid://dd2bvrtlakyp7" path="res://confirm_dialog.gd" id="1_41w52"]
-[ext_resource type="FontFile" uid="uid://cuw8bwaypt5pf" path="res://Fonts/Gaegu-Regular.ttf" id="2_ou0x1"]
-[ext_resource type="FontFile" uid="uid://cobthugrtjcsy" path="res://Fonts/NewPixelFont.tres" id="2_t52an"]
+[ext_resource type="Script" uid="uid://dd2bvrtlakyp7" path="res://scripts/ui/confirm_dialog.gd" id="1_41w52"]
+[ext_resource type="FontFile" uid="uid://cuw8bwaypt5pf" path="res://assets/fonts/Gaegu-Regular.ttf" id="2_ou0x1"]
+[ext_resource type="FontFile" uid="uid://cobthugrtjcsy" path="res://assets/fonts/NewPixelFont.tres" id="2_t52an"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ou0x1"]
 

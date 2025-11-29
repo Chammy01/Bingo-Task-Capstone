@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://blu17w1dni0ki"]
 
-[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="1_qsnsi"]
-[ext_resource type="Script" uid="uid://dbdo8ybeceaw2" path="res://music_preview_popup.gd" id="1_wmfdu"]
-[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://Fonts/MinecraftRegular-Bmg3.otf" id="4_igl3q"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://assets/backgrounds/woodenbtn.png" id="1_qsnsi"]
+[ext_resource type="Script" uid="uid://dbdo8ybeceaw2" path="res://scripts/ui/music_preview_popup.gd" id="1_wmfdu"]
+[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://assets/fonts/MinecraftRegular-Bmg3.otf" id="4_igl3q"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_igl3q"]
 atlas = ExtResource("1_qsnsi")

@@ -1,12 +1,12 @@
 [gd_scene load_steps=18 format=3 uid="uid://dts0lsphbr6hh"]
 
-[ext_resource type="Texture2D" uid="uid://btq0d80t13ive" path="res://Background/default.png" id="1_ck8l3"]
-[ext_resource type="Script" uid="uid://dfhj1ckcmn0ip" path="res://stamps_scene.gd" id="1_t3x40"]
-[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="2_t3x40"]
-[ext_resource type="FontFile" uid="uid://baon0phiso5m0" path="res://Fonts/PressStart2P-vaV7.ttf" id="5_32vt4"]
-[ext_resource type="Script" uid="uid://djio57t645dff" path="res://Calendar.gd" id="5_sv5u3"]
-[ext_resource type="FontFile" uid="uid://bqgltdlnfecy7" path="res://Fonts/Calendar Font.ttf" id="6_sv5u3"]
-[ext_resource type="AudioStream" uid="uid://cyfph4lf3yi0a" path="res://music/touchpad.mp3" id="7_32vt4"]
+[ext_resource type="Texture2D" uid="uid://btq0d80t13ive" path="res://assets/backgrounds/default.png" id="1_ck8l3"]
+[ext_resource type="Script" uid="uid://dfhj1ckcmn0ip" path="res://scripts/scenes/stamps_scene.gd" id="1_t3x40"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://assets/backgrounds/woodenbtn.png" id="2_t3x40"]
+[ext_resource type="FontFile" uid="uid://baon0phiso5m0" path="res://assets/fonts/PressStart2P-vaV7.ttf" id="5_32vt4"]
+[ext_resource type="Script" uid="uid://djio57t645dff" path="res://scripts/ui/Calendar.gd" id="5_sv5u3"]
+[ext_resource type="FontFile" uid="uid://bqgltdlnfecy7" path="res://assets/fonts/Calendar Font.ttf" id="6_sv5u3"]
+[ext_resource type="AudioStream" uid="uid://cyfph4lf3yi0a" path="res://assets/audio/touchpad.mp3" id="7_32vt4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nmy5l"]
 atlas = ExtResource("2_t3x40")

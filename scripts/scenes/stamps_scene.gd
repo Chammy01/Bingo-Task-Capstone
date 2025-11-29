@@ -1,4 +1,4 @@
-extends "res://base_scene.gd"
+extends "res://scripts/scenes/base_scene.gd"
 
 # ============================================
 # NODE REFERENCES
@@ -21,8 +21,8 @@ extends "res://base_scene.gd"
 # ATLAS CONFIGURATION
 # ============================================
 
-const ATLAS_PATH = "res://Background/woodenbtn.png"
-const SETTINGS_POPUP = preload("res://SettingsPopup.tscn")
+const ATLAS_PATH = "res://assets/backgrounds/woodenbtn.png"
+const SETTINGS_POPUP = preload("res://scenes/SettingsPopup.tscn")
 
 const STAMP_REGIONS = {
 	"locked":  Rect2(206, 127, 100, 124),
@@ -377,7 +377,7 @@ func _show_locked_hint(index: int):
 func _on_back_pressed():
 	"""Return to main menu"""
 	print("⬅️ Back button pressed")
-	get_tree().change_scene_to_file("res://main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 # ============================================
 # DEBUG CONTROLS

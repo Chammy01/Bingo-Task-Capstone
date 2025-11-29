@@ -1,4 +1,4 @@
-extends "res://base_scene.gd"
+extends "res://scripts/scenes/base_scene.gd"
 
 # ============================================
 # NODE REFERENCES
@@ -15,7 +15,7 @@ var deco_nodes: Array = []
 # PRELOADS
 # ============================================
 
-const SETTINGS_POPUP = preload("res://SettingsPopup.tscn")
+const SETTINGS_POPUP = preload("res://scenes/SettingsPopup.tscn")
 const BUTTON_SOUND_DURATION = 0.25
 
 # ============================================
@@ -109,19 +109,19 @@ func _hide_all_decorations():
 func _on_shop_pressed() -> void:
 	button_sound.play()
 	await get_tree().create_timer(BUTTON_SOUND_DURATION).timeout
-	get_tree().change_scene_to_file("res://ShopScene.tscn")
+	get_tree().change_scene_to_file("res://scenes/ShopScene.tscn")
 	print("→ Loading shop scene")
 
 func _on_badges_pressed() -> void:
 	button_sound.play()
 	await get_tree().create_timer(BUTTON_SOUND_DURATION).timeout
-	get_tree().change_scene_to_file("res://StampsScene.tscn")
+	get_tree().change_scene_to_file("res://scenes/StampsScene.tscn")
 	print("→ Loading stamps scene")
 
 func _on_start_pressed() -> void:
 	button_sound.play()
 	await get_tree().create_timer(BUTTON_SOUND_DURATION).timeout
-	get_tree().change_scene_to_file("res://bingo_board.tscn")
+	get_tree().change_scene_to_file("res://scenes/bingo_board.tscn")
 	print("→ Loading bingo board")
 
 func _on_settings_pressed() -> void:

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bns7h3fyv3ey0"]
 
-[ext_resource type="Script" uid="uid://dtbecrxx0mpmv" path="res://toast.gd" id="1_uybjb"]
-[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://Fonts/MinecraftRegular-Bmg3.otf" id="2_fdq47"]
+[ext_resource type="Script" uid="uid://dtbecrxx0mpmv" path="res://scripts/ui/toast.gd" id="1_uybjb"]
+[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://assets/fonts/MinecraftRegular-Bmg3.otf" id="2_fdq47"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nbng2"]
 bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0.6117647)

@@ -21,17 +21,17 @@ var deco_nodes: Array = []
 # PRELOADS
 # ============================================
 
-const SETTINGS_POPUP = preload("res://SettingsPopup.tscn")
-const TASK_INPUT_POPUP = preload("res://TaskInputPopup.tscn")
-const BINGO_TILE = preload("res://BingoTile.tscn")
-const CONFIRM_DIALOG = preload("res://ConfirmDialog.tscn")
-const COIN_SOUND = preload("res://music/coin-sound.mp3")
-const BINGO_SOUND = preload("res://music/bingo.mp3")
-const BUTTON_CLICK_SOUND = preload("res://music/touchpad.mp3")
-const SUCCESS_SOUND = preload("res://music/notification-alert.mp3")
-const DEADLINE_WARNING_SOUND = preload("res://music/notification-alert.mp3")
-const DEADLINE_EXPIRED_SOUND = preload("res://music/notification-error.mp3")
-const CALENDAR_POPUP = preload("res://CalendarPopup.tscn")
+const SETTINGS_POPUP = preload("res://scenes/SettingsPopup.tscn")
+const TASK_INPUT_POPUP = preload("res://scenes/TaskInputPopup.tscn")
+const BINGO_TILE = preload("res://scenes/BingoTile.tscn")
+const CONFIRM_DIALOG = preload("res://scenes/ConfirmDialog.tscn")
+const COIN_SOUND = preload("res://assets/audio/coin-sound.mp3")
+const BINGO_SOUND = preload("res://assets/audio/bingo.mp3")
+const BUTTON_CLICK_SOUND = preload("res://assets/audio/touchpad.mp3")
+const SUCCESS_SOUND = preload("res://assets/audio/notification-alert.mp3")
+const DEADLINE_WARNING_SOUND = preload("res://assets/audio/notification-alert.mp3")
+const DEADLINE_EXPIRED_SOUND = preload("res://assets/audio/notification-error.mp3")
+const CALENDAR_POPUP = preload("res://scenes/CalendarPopup.tscn")
 
 # ============================================
 # VARIABLES
@@ -607,7 +607,7 @@ func _on_back_pressed():
 		save_all_tasks()
 	SessionManager.save_session_data()
 	print("⬅️ Returning to main menu")
-	get_tree().change_scene_to_file("res://main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 # ============================================
 # DISPLAY UPDATE FUNCTIONS

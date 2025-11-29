@@ -5,10 +5,10 @@ extends Control
 @onready var background: TextureRect = $Background
 
 # Preload all background textures for reliable loading on all platforms including mobile
-const BG_DEFAULT = preload("res://Background/default.png")
-const BG_GRASS = preload("res://Background/grass.png")
-const BG_CLOUD = preload("res://Background/cloud.png")
-const BG_SAKURA = preload("res://Background/sakura.png")
+const BG_DEFAULT = preload("res://assets/backgrounds/default.png")
+const BG_GRASS = preload("res://assets/backgrounds/grass.png")
+const BG_CLOUD = preload("res://assets/backgrounds/cloud.png")
+const BG_SAKURA = preload("res://assets/backgrounds/sakura.png")
 
 func _ready():
 	_apply_theme()

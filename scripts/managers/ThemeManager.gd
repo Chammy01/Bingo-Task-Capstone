@@ -6,13 +6,13 @@ signal theme_changed(theme_id: String)
 const THEME_SAVE_PATH = "user://theme_data.save"
 
 # Preload ALL resources at compile time
-const BG_DEFAULT = preload("res://Background/default.png")
-const BG_GRASS = preload("res://Background/grass.png")
-const BG_CLOUD = preload("res://Background/cloud.png")
-const BG_SAKURA = preload("res://Background/sakura.png")
-const BG_AUTUMN = preload("res://Background/autumn.png")
-const BG_SNOWY = preload("res://Background/snowy.png")
-const SPRITE_SHEET = preload("res://Background/woodenbtn.png")
+const BG_DEFAULT = preload("res://assets/backgrounds/default.png")
+const BG_GRASS = preload("res://assets/backgrounds/grass.png")
+const BG_CLOUD = preload("res://assets/backgrounds/cloud.png")
+const BG_SAKURA = preload("res://assets/backgrounds/sakura.png")
+const BG_AUTUMN = preload("res://assets/backgrounds/autumn.png")
+const BG_SNOWY = preload("res://assets/backgrounds/snowy.png")
+const SPRITE_SHEET = preload("res://assets/backgrounds/woodenbtn.png")
 var current_theme: String = "default"
 
 # Background paths - using preloaded resources

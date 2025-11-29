@@ -1,13 +1,13 @@
 [gd_scene load_steps=24 format=3 uid="uid://d23kbojvppv4r"]
 
-[ext_resource type="Texture2D" uid="uid://btq0d80t13ive" path="res://Background/default.png" id="1_l37rh"]
-[ext_resource type="Script" uid="uid://djio57t645dff" path="res://Calendar.gd" id="2_u6v3b"]
-[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="3_ls1bg"]
-[ext_resource type="FontFile" uid="uid://baon0phiso5m0" path="res://Fonts/PressStart2P-vaV7.ttf" id="4_ls1bg"]
-[ext_resource type="Script" uid="uid://bb7rpwlalbv6x" path="res://board_manager.gd" id="5_f1o6j"]
-[ext_resource type="Script" uid="uid://5xd37jjpalnt" path="res://jar.gd" id="7_ksyp2"]
-[ext_resource type="AudioStream" uid="uid://cyfph4lf3yi0a" path="res://music/touchpad.mp3" id="8_ksyp2"]
-[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://Fonts/MinecraftRegular-Bmg3.otf" id="9_bedjm"]
+[ext_resource type="Texture2D" uid="uid://btq0d80t13ive" path="res://assets/backgrounds/default.png" id="1_l37rh"]
+[ext_resource type="Script" uid="uid://djio57t645dff" path="res://scripts/ui/Calendar.gd" id="2_u6v3b"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://assets/backgrounds/woodenbtn.png" id="3_ls1bg"]
+[ext_resource type="FontFile" uid="uid://baon0phiso5m0" path="res://assets/fonts/PressStart2P-vaV7.ttf" id="4_ls1bg"]
+[ext_resource type="Script" uid="uid://bb7rpwlalbv6x" path="res://scripts/scenes/board_manager.gd" id="5_f1o6j"]
+[ext_resource type="Script" uid="uid://5xd37jjpalnt" path="res://scripts/ui/jar.gd" id="7_ksyp2"]
+[ext_resource type="AudioStream" uid="uid://cyfph4lf3yi0a" path="res://assets/audio/touchpad.mp3" id="8_ksyp2"]
+[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://assets/fonts/MinecraftRegular-Bmg3.otf" id="9_bedjm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xncjs"]
 atlas = ExtResource("3_ls1bg")

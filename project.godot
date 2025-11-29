@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="BingoTask"
-run/main_scene="res://main_menu.tscn"
+run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.5", "Mobile")
 config/icon="uid://dqo5e8mhplfeu"
 
@@ -21,18 +21,18 @@ buses/default_bus_layout="uid://bqd0xarjfn038"
 
 [autoload]
 
-SceneManager="*res://SceneManager.gd"
-BgMusic="*res://music/bg_music.tscn"
-SaveManager="*res://SaveManager.gd"
-CurrencyManager="*res://CurrencyManager.gd"
-SettingsManager="*res://SettingsManager.gd"
-ToastManager="*res://ToastManager.gd"
-SessionManager="*res://SessionManager.gd"
-Toast="*res://Toast.tscn"
-BadgeManager="*res://BadgeManager.gd"
-MusicManager="*res://MusicManager.gd"
-ThemeManager="*res://ThemeManager.gd"
-NotificationManager="*res://NotificationManager.gd"
+SceneManager="*res://scripts/managers/SceneManager.gd"
+BgMusic="*res://assets/audio/bg_music.tscn"
+SaveManager="*res://scripts/managers/SaveManager.gd"
+CurrencyManager="*res://scripts/managers/CurrencyManager.gd"
+SettingsManager="*res://scripts/managers/SettingsManager.gd"
+ToastManager="*res://scripts/managers/ToastManager.gd"
+SessionManager="*res://scripts/managers/SessionManager.gd"
+Toast="*res://scenes/Toast.tscn"
+BadgeManager="*res://scripts/managers/BadgeManager.gd"
+MusicManager="*res://scripts/managers/MusicManager.gd"
+ThemeManager="*res://scripts/managers/ThemeManager.gd"
+NotificationManager="*res://scripts/managers/NotificationManager.gd"
 
 [display]
 

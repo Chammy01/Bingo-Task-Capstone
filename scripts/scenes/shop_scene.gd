@@ -1,11 +1,11 @@
-extends "res://base_scene.gd"  # Inherit background functionality
+extends "res://scripts/scenes/base_scene.gd"  # Inherit background functionality
 
 var tracks = [
 	{
 		"id": "Blossom",
 		"name": "Japanese Chill",
 		"price": 50,
-		"atlas": "res://Background/woodenbtn.png",
+		"atlas": "res://assets/backgrounds/woodenbtn.png",
 		"region": Rect2(0, 627, 147, 202),
 		"is_owned": false,
 		"background_theme": "theme_blossom"
@@ -14,7 +14,7 @@ var tracks = [
 		"id": "Valley",
 		"name": "Nature Vibes",
 		"price": 100,
-		"atlas": "res://Background/woodenbtn.png",
+		"atlas": "res://assets/backgrounds/woodenbtn.png",
 		"region": Rect2(153, 627, 147, 202),
 		"is_owned": false,
 		"background_theme": "theme_valley"
@@ -23,7 +23,7 @@ var tracks = [
 		"id": "Horizon",
 		"name": "Light Music",
 		"price": 150,
-		"atlas": "res://Background/woodenbtn.png",
+		"atlas": "res://assets/backgrounds/woodenbtn.png",
 		"region": Rect2(305, 627, 147, 202),
 		"is_owned": false,
 		"background_theme": "theme_horizon"
@@ -31,7 +31,7 @@ var tracks = [
 	{
 		"id": "DefaultTrack",
 		"name": "DefaultTrack",
-		"atlas": "res://Background/woodenbtn.png",
+		"atlas": "res://assets/backgrounds/woodenbtn.png",
 		"region": Rect2(0, 834, 147, 202),
 		"is_owned": true,
 		"background_theme": "default"
@@ -40,7 +40,7 @@ var tracks = [
 		"id": "Autumn",
 		"name": "Autumn Fall",
 		"price": 200,
-		"atlas": "res://Background/woodenbtn.png",
+		"atlas": "res://assets/backgrounds/woodenbtn.png",
 		"region": Rect2(305, 834, 147, 202),
 		"is_owned": false,
 		"background_theme": "theme_autumn"
@@ -49,7 +49,7 @@ var tracks = [
 		"id": "Snowy",
 		"name": "Winter Chill",
 		"price": 250,
-		"atlas": "res://Background/woodenbtn.png",
+		"atlas": "res://assets/backgrounds/woodenbtn.png",
 		"region": Rect2(153, 834, 147, 202),
 		"is_owned": false,
 		"background_theme": "theme_snowy"
@@ -63,7 +63,7 @@ var cards_per_page: int = 4
 # Decoration system
 var deco_nodes = []
 
-const SETTINGS_POPUP = preload("res://SettingsPopup.tscn")
+const SETTINGS_POPUP = preload("res://scenes/SettingsPopup.tscn")
 
 @onready var card1 = $CardContainer/Card1
 @onready var card2 = $CardContainer/Card2
@@ -263,7 +263,7 @@ func _on_popup_closed():
 func _on_back_pressed() -> void:
 	print("⬅️ Back button pressed")
 	button_sound.play()
-	get_tree().change_scene_to_file("res://main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 func _get_total_pages() -> int:
 	return ceili(float(tracks.size()) / float(cards_per_page))

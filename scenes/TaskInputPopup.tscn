@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://bjmvd45enfcx7"]
 
-[ext_resource type="Script" uid="uid://b2bfisn33ggte" path="res://task_input_popup.gd" id="1_rkdhm"]
-[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="2_fbqgv"]
-[ext_resource type="FontFile" uid="uid://bv6uqh2mdmjvf" path="res://Fonts/Gaegu-Pixel(1).ttf" id="3_mdkuy"]
-[ext_resource type="FontFile" uid="uid://cuw8bwaypt5pf" path="res://Fonts/Gaegu-Regular.ttf" id="4_j8txc"]
+[ext_resource type="Script" uid="uid://b2bfisn33ggte" path="res://scripts/ui/task_input_popup.gd" id="1_rkdhm"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://assets/backgrounds/woodenbtn.png" id="2_fbqgv"]
+[ext_resource type="FontFile" uid="uid://bv6uqh2mdmjvf" path="res://assets/fonts/Gaegu-Pixel(1).ttf" id="3_mdkuy"]
+[ext_resource type="FontFile" uid="uid://cuw8bwaypt5pf" path="res://assets/fonts/Gaegu-Regular.ttf" id="4_j8txc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mdkuy"]
 atlas = ExtResource("2_fbqgv")
