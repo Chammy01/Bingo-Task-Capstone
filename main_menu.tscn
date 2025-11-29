@@ -1,45 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://cjsjqgk6n38k5"]
+[gd_scene load_steps=10 format=3 uid="uid://cjsjqgk6n38k5"]
 
 [ext_resource type="Script" uid="uid://d0ggiugh2xw8o" path="res://main_menu.gd" id="1_l2rqn"]
 [ext_resource type="Texture2D" uid="uid://btq0d80t13ive" path="res://Background/default.png" id="2_4rjhv"]
 [ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="3_4rjhv"]
-[ext_resource type="Texture2D" uid="uid://b4fdsxav63ho3" path="res://Buttons/ELR_SpringlLeaf.png" id="5_10d3e"]
 [ext_resource type="AudioStream" uid="uid://cyfph4lf3yi0a" path="res://music/touchpad.mp3" id="7_l2rqn"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0t76g"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_et0r5"]
-region = Rect2(901, 828, 33, 60)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xaurw"]
-region = Rect2(945, 858, 51, 45)
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_4rjhv"]
-particles_animation = true
-particles_anim_h_frames = 7
-particles_anim_v_frames = 1
-particles_anim_loop = false
-
-[sub_resource type="Gradient" id="Gradient_l2rqn"]
-offsets = PackedFloat32Array(0, 0.138393, 0.65625, 1)
-colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_0t76g"]
-gradient = SubResource("Gradient_l2rqn")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0fgqv"]
-particle_flag_disable_z = true
-emission_shape = 3
-emission_box_extents = Vector3(200, 400, 1)
-direction = Vector3(1, 2, 2)
-spread = 20.0
-initial_velocity_min = 20.0
-initial_velocity_max = 80.0
-gravity = Vector3(0, 15, 0)
-scale_min = 0.5
-scale_max = 1.5
-color_ramp = SubResource("GradientTexture1D_0t76g")
-anim_offset_max = 1.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nlkkf"]
 atlas = ExtResource("3_4rjhv")
@@ -89,33 +53,6 @@ grow_vertical = 2
 scale = Vector2(1.05, 1.05)
 texture = ExtResource("2_4rjhv")
 expand_mode = 1
-
-[node name="Deco1" type="Sprite2D" parent="."]
-position = Vector2(331, 165)
-scale = Vector2(2.445, 2.445)
-texture = SubResource("AtlasTexture_0t76g")
-
-[node name="Deco2" type="Sprite2D" parent="."]
-position = Vector2(312.99997, 613)
-scale = Vector2(2.71, 2.71)
-texture = SubResource("AtlasTexture_et0r5")
-
-[node name="Deco3" type="Sprite2D" parent="."]
-position = Vector2(44, 322)
-scale = Vector2(2.92, 2.92)
-
-[node name="Deco4" type="Sprite2D" parent="."]
-position = Vector2(105, 632.99994)
-scale = Vector2(2.87, 2.87)
-texture = SubResource("AtlasTexture_xaurw")
-
-[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_4rjhv")
-position = Vector2(173, 338)
-amount = 20
-texture = ExtResource("5_10d3e")
-visibility_rect = Rect2(-173.015, -340.2, 359.315, 728.5)
-process_material = SubResource("ParticleProcessMaterial_0fgqv")
 
 [node name="Logo" type="Sprite2D" parent="."]
 position = Vector2(171.00002, 146.00002)
@@ -170,6 +107,98 @@ offset_bottom = 85.0
 scale = Vector2(0.605, 0.605)
 texture_normal = SubResource("AtlasTexture_etpoy")
 ignore_texture_size = true
+
+[node name="Deco1" type="Sprite2D" parent="."]
+position = Vector2(321, 126.00001)
+scale = Vector2(1.3231708, 1.3231709)
+
+[node name="Deco2" type="Sprite2D" parent="."]
+position = Vector2(296.00003, 641)
+scale = Vector2(0.82530123, 0.8253012)
+
+[node name="Deco3" type="Sprite2D" parent="."]
+position = Vector2(50, 324)
+scale = Vector2(1.5923077, 1.5923077)
+
+[node name="Deco4" type="Sprite2D" parent="."]
+position = Vector2(95, 641)
+scale = Vector2(1.3492064, 1.3492063)
+
+[node name="Deco5" type="Sprite2D" parent="."]
+position = Vector2(76.5, 635.25)
+scale = Vector2(2.5, 2.5)
+
+[node name="Deco6" type="Sprite2D" parent="."]
+position = Vector2(53, 333)
+scale = Vector2(2.2159092, 2.2159092)
+
+[node name="Deco7" type="Sprite2D" parent="."]
+position = Vector2(293.5212, 640.16473)
+rotation = -0.16716792
+scale = Vector2(2.3198287, 2.3198287)
+
+[node name="Deco8" type="Sprite2D" parent="."]
+position = Vector2(114, 599)
+rotation = 0.22515883
+scale = Vector2(0.9220482, 0.9220482)
+
+[node name="Deco9" type="Sprite2D" parent="."]
+position = Vector2(35, 341)
+scale = Vector2(2.4534883, 2.4534883)
+
+[node name="Deco10" type="Sprite2D" parent="."]
+position = Vector2(347.00003, 133.00002)
+scale = Vector2(2.2826087, 2.2826087)
+
+[node name="Deco11" type="Sprite2D" parent="."]
+position = Vector2(98.85713, 672.625)
+scale = Vector2(3.8642852, 3.8642855)
+
+[node name="Deco12" type="Sprite2D" parent="."]
+position = Vector2(363, 160.00002)
+scale = Vector2(3.056123, 3.056123)
+
+[node name="Deco13" type="Sprite2D" parent="."]
+position = Vector2(85.84485, 669.13885)
+rotation = 0.22931093
+scale = Vector2(2.532331, 2.5323312)
+
+[node name="Deco14" type="Sprite2D" parent="."]
+position = Vector2(44, 354)
+scale = Vector2(2.710527, 2.710527)
+
+[node name="Deco15" type="Sprite2D" parent="."]
+position = Vector2(287.00006, 670)
+rotation = -0.44237423
+scale = Vector2(3.4141953, 3.4141955)
+
+[node name="Deco16" type="Sprite2D" parent="."]
+position = Vector2(81.00001, 628.00006)
+rotation = -0.31369212
+scale = Vector2(1.1651787, 1.1651785)
+
+[node name="Deco17" type="Sprite2D" parent="."]
+position = Vector2(47.000004, 340)
+rotation = 0.31359035
+scale = Vector2(1.7125325, 1.7125323)
+
+[node name="Deco18" type="Sprite2D" parent="."]
+position = Vector2(321.00003, 139.00002)
+scale = Vector2(1.9132653, 1.9132653)
+
+[node name="Deco19" type="Sprite2D" parent="."]
+position = Vector2(43.000008, 349.00003)
+rotation = 0.39482862
+scale = Vector2(1.6818179, 1.681818)
+
+[node name="Deco20" type="Sprite2D" parent="."]
+position = Vector2(106, 668.00006)
+rotation = -1.9404624
+scale = Vector2(1.7730744, 1.7730744)
+
+[node name="Deco21" type="Sprite2D" parent="."]
+position = Vector2(337, 137.99998)
+scale = Vector2(1.5999998, 1.5999995)
 
 [connection signal="pressed" from="START/START" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="SHOP/SHOP" to="." method="_on_shop_pressed"]

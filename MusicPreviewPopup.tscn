@@ -5,7 +5,8 @@
 [ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://Fonts/MinecraftRegular-Bmg3.otf" id="4_igl3q"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_igl3q"]
-region = Rect2(0, 834, 147, 202)
+atlas = ExtResource("1_qsnsi")
+region = Rect2(153, 834, 146, 202)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c7yju"]
 atlas = ExtResource("1_qsnsi")

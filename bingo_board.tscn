@@ -108,9 +108,6 @@ scale = Vector2(1.05, 1.05)
 texture = ExtResource("1_l37rh")
 expand_mode = 1
 
-[node name="Deco1" type="Sprite2D" parent="."]
-position = Vector2(42, 664)
-
 [node name="Calendar" type="Node2D" parent="."]
 position = Vector2(18, -1)
 script = ExtResource("2_u6v3b")
@@ -299,6 +296,83 @@ theme_override_colors/font_color = Color(0.49019608, 0.31764707, 0.23921569, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5411765)
 theme_override_fonts/font = ExtResource("9_bedjm")
 theme_override_font_sizes/font_size = 40
+
+[node name="Deco1" type="Sprite2D" parent="."]
+position = Vector2(93, 673)
+scale = Vector2(1.3231708, 1.3231709)
+
+[node name="Deco5" type="Sprite2D" parent="."]
+position = Vector2(77.00001, 668.00006)
+scale = Vector2(2.5, 2.5)
+
+[node name="Deco6" type="Sprite2D" parent="."]
+position = Vector2(20, 102.000015)
+scale = Vector2(2.2159092, 2.2159092)
+
+[node name="Deco7" type="Sprite2D" parent="."]
+position = Vector2(222.00003, 688.99994)
+rotation = -0.16716792
+scale = Vector2(2.3198287, 2.3198287)
+
+[node name="Deco8" type="Sprite2D" parent="."]
+position = Vector2(58.000008, 72)
+rotation = 0.22515883
+scale = Vector2(0.9220482, 0.9220482)
+
+[node name="Deco9" type="Sprite2D" parent="."]
+position = Vector2(18, 120)
+scale = Vector2(2.4534883, 2.4534883)
+
+[node name="Deco10" type="Sprite2D" parent="."]
+position = Vector2(153.00005, 6.000023)
+scale = Vector2(2.2826087, 2.2826087)
+
+[node name="Deco11" type="Sprite2D" parent="."]
+position = Vector2(97.99999, 679)
+scale = Vector2(3.8642852, 3.8642855)
+
+[node name="Deco13" type="Sprite2D" parent="."]
+position = Vector2(232, 683)
+rotation = -0.15121794
+scale = Vector2(2.532331, 2.5323312)
+
+[node name="Deco14" type="Sprite2D" parent="."]
+position = Vector2(47, 658.99994)
+rotation = -0.23208953
+scale = Vector2(2.710527, 2.710527)
+
+[node name="Deco15" type="Sprite2D" parent="."]
+position = Vector2(21.000004, 25)
+rotation = 1.62498
+scale = Vector2(3.4141953, 3.4141955)
+
+[node name="Deco16" type="Sprite2D" parent="."]
+position = Vector2(30.000002, 40.999996)
+rotation = -0.083156645
+scale = Vector2(1.1651787, 1.1651785)
+
+[node name="Deco17" type="Sprite2D" parent="."]
+position = Vector2(92.99999, 658.99994)
+rotation = 0.31359035
+scale = Vector2(1.7125325, 1.7125323)
+
+[node name="Deco18" type="Sprite2D" parent="."]
+position = Vector2(175.00002, 47)
+scale = Vector2(1.9132653, 1.9132653)
+
+[node name="Deco19" type="Sprite2D" parent="."]
+position = Vector2(19, 151)
+rotation = 0.39482862
+scale = Vector2(1.6818179, 1.681818)
+
+[node name="Deco20" type="Sprite2D" parent="."]
+position = Vector2(126.99999, 690)
+rotation = -1.9404624
+scale = Vector2(1.7730744, 1.7730744)
+
+[node name="Deco21" type="Sprite2D" parent="."]
+position = Vector2(205.00002, 32)
+scale = Vector2(1.5999998, 1.5999995)
 
 [connection signal="timeout" from="Calendar/UpdateTimer" to="Calendar" method="check_for_date_change"]
 [connection signal="pressed" from="BoardManager/BackButton" to="BoardManager" method="_on_back_pressed"]
