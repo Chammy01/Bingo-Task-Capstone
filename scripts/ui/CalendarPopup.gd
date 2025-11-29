@@ -34,7 +34,7 @@ const BACKGROUND_POSITION = Vector2(6.0, 130.0)
 # SPRITE SHEET & ATLAS REGIONS
 # ============================================
 
-const CALENDAR_SHEET = preload("res://Background/calendar.png")
+const CALENDAR_SHEET = preload("res://assets/backgrounds/calendar.png")
 const GRID_SCALE = 0.4  # Updated from 0.245
 const GRID_SIZE = Vector2(710, 752.645)
 

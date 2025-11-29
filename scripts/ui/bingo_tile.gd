@@ -68,9 +68,9 @@ func _ready() -> void:
 
 func _load_sticky_textures() -> void:
 	sticky_textures = [
-		load("res://Background/green_sticky.png"),
-		load("res://Background/pink_sticky.png"),
-		load("res://Background/yellow_sticky.png"),
+		load("res://assets/backgrounds/green_sticky.png"),
+		load("res://assets/backgrounds/pink_sticky.png"),
+		load("res://assets/backgrounds/yellow_sticky.png"),
 	]
 
 func set_sticky_color(color_index: int) -> void:

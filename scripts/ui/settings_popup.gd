@@ -22,7 +22,7 @@ signal settings_closed
 # PRELOADS
 # ============================================
 
-const BUTTON_CLICK_SOUND = preload("res://music/touchpad.mp3")
+const BUTTON_CLICK_SOUND = preload("res://assets/audio/touchpad.mp3")
 
 # ============================================
 # INITIALIZATION

@@ -21,15 +21,15 @@ var bg_music_was_playing: bool = false
 var bg_music_position: float = 0.0  # Store playback position
 
 var music_files = {
-	"Blossom": "res://music/Blossom.mp3",
-	"Valley": "res://music/Nature.mp3",
-	"Horizon": "res://music/Horizon.mp3",
-	"EveningGlow": "res://music/DefaultTrack.mp3",
-	"Autumn": "res://music/autumn.mp3",
-	"Snowy": "res://music/snowy.mp3"
+	"Blossom": "res://assets/audio/Blossom.mp3",
+	"Valley": "res://assets/audio/Nature.mp3",
+	"Horizon": "res://assets/audio/Horizon.mp3",
+	"EveningGlow": "res://assets/audio/DefaultTrack.mp3",
+	"Autumn": "res://assets/audio/autumn.mp3",
+	"Snowy": "res://assets/audio/snowy.mp3"
 }
 
-var button_spritesheet = preload("res://Background/woodenbtn.png")
+var button_spritesheet = preload("res://assets/backgrounds/woodenbtn.png")
 
 var buy_atlas := AtlasTexture.new()
 var select_atlas := AtlasTexture.new()

@@ -2,7 +2,7 @@
 extends Node
 
 # Reference to our animation scene
-var transition_scene = preload("res://transition_layer.tscn")
+var transition_scene = preload("res://scenes/transition_layer.tscn")
 var current_transition = null
 
 # This is the main function we'll call from anywhere in the game.
