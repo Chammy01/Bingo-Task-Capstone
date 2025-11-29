@@ -115,7 +115,7 @@ Auto-saves:
 
 - **Engine**: Godot 4.x
 - **Language**: GDScript
-- **Target Platform**: Mobile (Android/iOS)
+- **Target Platform**: Mobile (Android only)
 - **Rendering**: GL Compatibility (for mobile support)
 
 ---
@@ -212,7 +212,7 @@ Bingo-Task-Capstone/
 
 1. **Configure Export**
    - Go to Project → Export
-   - Add Android or iOS preset
+   - Add Android preset
    - Configure signing keys (Android) or provisioning profiles (iOS)
 
 2. **Export**
