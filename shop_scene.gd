@@ -41,7 +41,7 @@ var tracks = [
 		"name": "Autumn Fall",
 		"price": 200,
 		"atlas": "res://Background/woodenbtn.png",
-		"region": Rect2(0, 0, 64, 64),
+		"region": Rect2(305, 834, 147, 202),
 		"is_owned": false,
 		"background_theme": "theme_autumn"
 	},
@@ -50,7 +50,7 @@ var tracks = [
 		"name": "Winter Chill",
 		"price": 250,
 		"atlas": "res://Background/woodenbtn.png",
-		"region": Rect2(0, 0, 64, 64),
+		"region": Rect2(153, 834, 147, 202),
 		"is_owned": false,
 		"background_theme": "theme_snowy"
 	}
@@ -59,6 +59,9 @@ var tracks = [
 # Pagination variables
 var current_page: int = 0
 var cards_per_page: int = 4
+
+# Decoration system
+var deco_nodes = []
 
 const SETTINGS_POPUP = preload("res://SettingsPopup.tscn")
 
@@ -77,6 +80,10 @@ func _ready():
 	
 	print("=== SHOP SCENE STARTING ===")
 	
+	# Setup decorations
+	_auto_collect_decorations()
+	_update_decorations()
+	
 	# Verify nodes exist
 	print("Card1: %s" % (card1 != null))
 	print("Card2: %s" % (card2 != null))
@@ -86,9 +93,10 @@ func _ready():
 	print("BackButton: %s" % (back_button != null))
 	print("PrevButton: %s" % (prev_button != null))
 	print("NextButton: %s" % (next_button != null))
+	print("Decorations found: %d" % deco_nodes.size())
 	
 	if not popup:
-		push_error("❌ MusicPreviewPopup not found! Did you instance it in the scene?")
+		push_error("❌ MusicPreviewPopup not found! Did you instance it in the scene? ")
 		return
 	
 	# Setup cards
@@ -99,22 +107,67 @@ func _ready():
 	
 	# Connect popup signals
 	popup.purchase_confirmed.connect(_on_purchase_confirmed)
-	popup.purchase_failed.connect(_on_purchase_failed)
-	popup.preview_playing.connect(_on_preview_playing)
-	popup.popup_closed.connect(_on_popup_closed)
+	popup. purchase_failed.connect(_on_purchase_failed)
+	popup.preview_playing. connect(_on_preview_playing)
+	popup.popup_closed. connect(_on_popup_closed)
 	
 	# Update pagination button visibility
 	_update_pagination_buttons()
 	
 	print("✓ Shop ready!")
 
+# ============== DECORATION SYSTEM ==============
+
+func _auto_collect_decorations():
+	deco_nodes. clear()
+	for i in range(1, 22):  # Deco1 to Deco21
+		var node_name = "Deco%d" % i
+		var node = get_node_or_null(node_name)
+		if node:
+			deco_nodes. append({"name": node_name, "node": node})
+			print("✓ Found decoration: %s" % node_name)
+
+func _update_decorations():
+	if deco_nodes. is_empty():
+		return
+	
+	var all_decos = ThemeManager.get_all_decorations()
+	var visible_nodes = ThemeManager.get_visible_decoration_nodes(ThemeManager.current_theme)
+	var sprite_sheet = ThemeManager.get_sprite_sheet()
+	
+	# Setup textures and hide all decorations first
+	for deco in deco_nodes:
+		var node_name = deco["name"]
+		var node = deco["node"]
+		
+		if all_decos.has(node_name):
+			var data = all_decos[node_name]
+			node.texture = sprite_sheet
+			node.region_enabled = true
+			node.region_rect = data["region"]
+			node.scale = Vector2(data["scale"], data["scale"])
+		
+		node.visible = false  # Hide all by default
+	
+	# Show only decorations for current theme
+	for deco in deco_nodes:
+		if deco["name"] in visible_nodes:
+			deco["node"].visible = true
+
+func _on_theme_changed(_theme_id: String):
+	super._on_theme_changed(_theme_id)  # Call base class (applies background)
+	_update_decorations()  # Then update decorations
+	print("🎨 Shop decorations updated for theme: %s" % _theme_id)
+
+# ============== END DECORATION SYSTEM ==============
+
 func _on_settings_pressed() -> void:
 	button_sound.play()
 	await get_tree().create_timer(0.2).timeout
 	
-	var popup_inst = SETTINGS_POPUP.instantiate()
+	var popup_inst = SETTINGS_POPUP. instantiate()
 	get_tree().root.add_child(popup_inst)
-	popup_inst.settings_closed.connect(_on_settings_closed)
+	popup_inst. settings_closed.connect(_on_settings_closed)
 	
 	print("⚙️ Settings popup opened")
 
@@ -135,7 +188,7 @@ func _setup_cards():
 	var cards = [card1, card2, card3, card4]
 	var start_index = current_page * cards_per_page
 	
-	for i in range(cards.size()):
+	for i in range(cards. size()):
 		var card = cards[i]
 		var track_index = start_index + i
 		
@@ -155,22 +208,22 @@ func _setup_cards():
 func _connect_signals():
 	print("--- Connecting card signals ---")
 	if card1:
-		card1.card_clicked.connect(_on_card_clicked)
+		card1. card_clicked.connect(_on_card_clicked)
 		print("✓ Card1 connected")
 	if card2:
-		card2.card_clicked.connect(_on_card_clicked)
+		card2. card_clicked.connect(_on_card_clicked)
 		print("✓ Card2 connected")
 	if card3:
-		card3.card_clicked.connect(_on_card_clicked)
+		card3. card_clicked.connect(_on_card_clicked)
 		print("✓ Card3 connected")
 	if card4:
-		card4.card_clicked.connect(_on_card_clicked)
+		card4. card_clicked.connect(_on_card_clicked)
 		print("✓ Card4 connected")
 
 func _on_card_clicked(track_data: Dictionary):
 	print("\n=== CARD CLICKED ===")
 	print("Track: %s" % track_data.get("name", "?"))
-	print("Track ID: %s" % track_data.get("id", "?"))
+	print("Track ID: %s" % track_data.get("id", "? "))
 	
 	if popup:
 		popup.show_preview(track_data)
@@ -188,11 +241,11 @@ func _on_purchase_confirmed(track_id: String):
 			break
 	
 	# Change theme if this track has one
-	if purchased_track and purchased_track.has("background_theme"):
+	if purchased_track and purchased_track. has("background_theme"):
 		var theme_id = purchased_track["background_theme"]
 		ThemeManager.set_theme(theme_id)
 		var theme_name = ThemeManager.get_theme_name(theme_id)
-		Toast.show_toast("🎨 Theme unlocked: %s!" % theme_name, 2.0)
+		Toast. show_toast("🎨 Theme unlocked: %s!" % theme_name, 2.0)
 		print("✓ Theme changed to: %s" % theme_name)
 	
 	_setup_cards()

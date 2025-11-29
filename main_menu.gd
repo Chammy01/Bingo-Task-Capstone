@@ -46,14 +46,12 @@ func _ready():
 
 func _auto_collect_decorations():
 	deco_nodes.clear()
-	var i = 1
-	while true:
+	# Collect all possible decoration nodes (Deco1-Deco21)
+	for i in range(1, 22):
 		var deco_name = "Deco%d" % i
 		var deco = get_node_or_null(deco_name)
-		if deco == null:
-			break
-		deco_nodes.append(deco)
-		i += 1
+		if deco != null:
+			deco_nodes.append({"name": deco_name, "node": deco})
 	
 	if deco_nodes.size() == 0:
 		print("  ⚠️ No decoration nodes found (add Sprite2D nodes named 'Deco1', 'Deco2', etc.)")
@@ -67,42 +65,41 @@ func _on_theme_changed_custom(_theme_id: String):
 	_update_decorations()
 
 func _update_decorations():
-	var decoration_data = ThemeManager.get_current_decorations()
-	if decoration_data.size() == 0:
-		_hide_all_decorations()
-		return
+	var all_decos = ThemeManager.get_all_decorations()
+	var visible_nodes = ThemeManager.get_visible_decoration_nodes(ThemeManager.current_theme)
+	var sprite_sheet = ThemeManager.get_sprite_sheet()
 	
-	var sprite_sheet = decoration_data.get("sprite_sheet")
-	if not sprite_sheet:
-		_hide_all_decorations()
-		return
-	
-	if not sprite_sheet is Texture2D:
+	if not sprite_sheet or not sprite_sheet is Texture2D:
 		_hide_all_decorations()
 		print("  ⚠️ Sprite sheet is not a valid Texture2D")
 		return
 	
-	var items = decoration_data.get("items", [])
-	for i in range(min(items.size(), deco_nodes.size())):
-		var deco = deco_nodes[i]
-		var item = items[i]
+	# Apply textures and visibility to all decoration nodes
+	for deco_entry in deco_nodes:
+		var deco_name = deco_entry["name"]
+		var deco = deco_entry["node"]
 		
-		var atlas_texture = AtlasTexture.new()
-		atlas_texture.atlas = sprite_sheet
-		atlas_texture.region = item.region
+		if not deco:
+			continue
 		
-		deco.texture = atlas_texture
-		deco.scale = Vector2(item.scale, item.scale)
-		deco.visible = true
-	
-	for i in range(items.size(), deco_nodes.size()):
-		if deco_nodes[i]:
-			deco_nodes[i].visible = false
+		# Check if this node should be visible for current theme
+		if deco_name in visible_nodes and all_decos.has(deco_name):
+			var item = all_decos[deco_name]
+			
+			var atlas_texture = AtlasTexture.new()
+			atlas_texture.atlas = sprite_sheet
+			atlas_texture.region = item.region
+			
+			deco.texture = atlas_texture
+			deco.scale = Vector2(item.scale, item.scale)
+			deco.visible = true
+		else:
+			deco.visible = false
 
 func _hide_all_decorations():
-	for deco in deco_nodes:
-		if deco:
-			deco.visible = false
+	for deco_entry in deco_nodes:
+		if deco_entry["node"]:
+			deco_entry["node"].visible = false
 	print("  ⚪ All decorations hidden")
 
 # ============================================

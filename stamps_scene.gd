@@ -46,7 +46,7 @@ const STAMP_IDS = [
 const BADGE_INFO = {
 	"starter": {
 		"name": "First Steps",
-		"description": "Complete your first task!",
+		"description": "Complete your first task! ",
 		"hint": "Complete 1 task to unlock"
 	},
 	"badge2": {
@@ -56,7 +56,7 @@ const BADGE_INFO = {
 	},
 	"badge3": {
 		"name": "First BINGO",
-		"description": "Your first BINGO!",
+		"description": "Your first BINGO! ",
 		"hint": "Complete any row or column to unlock"
 	},
 	"badge4": {
@@ -71,7 +71,7 @@ const BADGE_INFO = {
 	},
 	"badge6": {
 		"name": "Grinder",
-		"description": "Completed 20 tasks total!",
+		"description": "Completed 20 tasks total! ",
 		"hint": "Complete 20 tasks to unlock"
 	}
 }
@@ -93,15 +93,72 @@ func _ready():
 	print("\n🎮 StampsScene initialized")
 	print("  BadgeManager badges: ", BadgeManager.unlocked_badges)
 	
+	# Setup decorations
+	_auto_collect_decorations()
+	_update_decorations()
+	
 	_setup_back_button()
 	_setup_stamps()
 	_make_stamps_clickable()
 	_test_coordinates()
 	
+	print("Decorations found: %d" % deco_nodes.size())
+	
 	if first_time_opened:
 		_play_bounce_for_unlocked()
 		first_time_opened = false
+
+# ============================================
+# DECORATION SYSTEM
+# ============================================
+
+func _auto_collect_decorations():
+	"""Find all Deco1-Deco21 nodes in the scene"""
+	deco_nodes. clear()
+	for i in range(1, 22):  # Deco1 to Deco21
+		var node_name = "Deco%d" % i
+		var node = get_node_or_null(node_name)
+		if node:
+			deco_nodes. append({"name": node_name, "node": node})
+			print("✓ Found decoration: %s" % node_name)
+
+func _update_decorations():
+	"""Apply textures and control visibility based on current theme"""
+	if deco_nodes.is_empty():
+		return
+	
+	var all_decos = ThemeManager.get_all_decorations()
+	var visible_nodes = ThemeManager.get_visible_decoration_nodes(ThemeManager.current_theme)
+	var sprite_sheet = ThemeManager. get_sprite_sheet()
+	
+	# Setup textures and hide all decorations first
+	for deco in deco_nodes:
+		var node_name = deco["name"]
+		var node = deco["node"]
 		
+		if all_decos.has(node_name):
+			var data = all_decos[node_name]
+			node.texture = sprite_sheet
+			node.region_enabled = true
+			node.region_rect = data["region"]
+			node.scale = Vector2(data["scale"], data["scale"])
+		
+		node.visible = false  # Hide all by default
+	
+	# Show only decorations for current theme
+	for deco in deco_nodes:
+		if deco["name"] in visible_nodes:
+			deco["node"].visible = true
+
+func _on_theme_changed(_theme_id: String):
+	super._on_theme_changed(_theme_id)  # Call base class (applies background)
+	_update_decorations()  # Then update decorations
+	print("🎨 Stamps decorations updated for theme: %s" % _theme_id)
+
+# ============================================
+# SETTINGS
+# ============================================
+
 func _on_settings_pressed() -> void:
 	"""Settings button clicked - show popup"""
 	button_sound.play()
@@ -127,7 +184,7 @@ func _apply_audio_settings():
 		AudioServer.get_bus_index("Music"), 
 		0.0 if music_on else -80.0
 	)
-	AudioServer.set_bus_volume_db(
+	AudioServer. set_bus_volume_db(
 		AudioServer.get_bus_index("SFX"), 
 		0.0 if sfx_on else -80.0
 	)
@@ -135,7 +192,7 @@ func _apply_audio_settings():
 	print("✓ Audio settings applied: Music=%s, SFX=%s" % [music_on, sfx_on])
 
 func _setup_back_button():
-	if not back_button.pressed.is_connected(_on_back_pressed):
+	if not back_button.pressed. is_connected(_on_back_pressed):
 		back_button.pressed.connect(_on_back_pressed)
 	print("✅ Back button connected")
 
@@ -157,15 +214,15 @@ func _setup_stamps():
 
 func _make_stamps_clickable():
 	for i in stamps.size():
-		stamps[i].mouse_filter = Control.MOUSE_FILTER_STOP
-		stamps[i].gui_input.connect(_on_stamp_input.bind(i))
+		stamps[i].mouse_filter = Control. MOUSE_FILTER_STOP
+		stamps[i].gui_input. connect(_on_stamp_input. bind(i))
 	print("✅ Stamps are clickable")
 
 func _test_coordinates():
 	print("\n📐 Testing atlas coordinates...")
 	var all_good = true
 	
-	if not STAMP_REGIONS.has("locked"):
+	if not STAMP_REGIONS. has("locked"):
 		print("❌ ERROR: 'locked' region not found!")
 		all_good = false
 	
@@ -192,12 +249,17 @@ func _play_bounce_for_unlocked():
 			_call_bounce_with_delay(index, delay)
 
 func _call_bounce_with_delay(index: int, delay: float) -> void:
+	# If delay is 0 or less, animate immediately without a timer
+	if delay <= 0:
+		_animate_unlock(index)
+		return
+	
 	var timer = Timer.new()
 	add_child(timer)
 	timer.wait_time = delay
 	timer.one_shot = true
 	timer.start()
-	timer.timeout.connect(
+	timer. timeout.connect(
 		func():
 			_animate_unlock(index)
 			timer.queue_free()
@@ -211,7 +273,7 @@ func _create_atlas_texture(stamp_name: String) -> AtlasTexture:
 	"""Create an AtlasTexture from a defined region"""
 	var atlas = AtlasTexture.new()
 	atlas.atlas = load(ATLAS_PATH)
-	atlas.region = STAMP_REGIONS[stamp_name]
+	atlas. region = STAMP_REGIONS[stamp_name]
 	return atlas
 
 # ============================================
@@ -261,7 +323,7 @@ func _on_stamp_input(event: InputEvent, index: int):
 	"""Handle stamp clicks and touch inputs"""
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_on_stamp_clicked(index)
-	elif event is InputEventScreenTouch and event.pressed:
+	elif event is InputEventScreenTouch and event. pressed:
 		_on_stamp_clicked(index)
 
 func _on_stamp_clicked(index: int):
@@ -282,7 +344,7 @@ func _animate_click(index: int):
 	
 	var tween = create_tween()
 	tween.tween_property(stamp, "scale", original_scale * 1.05, 0.1)
-	tween.tween_property(stamp, "scale", original_scale, 0.1)
+	tween. tween_property(stamp, "scale", original_scale, 0.1)
 
 func _show_stamp_detail(index: int):
 	"""Display toast with stamp details for unlocked stamp"""
@@ -304,7 +366,7 @@ func _show_locked_hint(index: int):
 	var message = "🔒 %s\n\n%s" % [info.name, info.hint]
 	
 	if has_node("/root/Toast"):
-		Toast.show_toast(message, 2.0)
+		Toast. show_toast(message, 2.0)
 	
 	print("🔒 %s is locked" % info.name)
 
@@ -324,20 +386,20 @@ func _on_back_pressed():
 func _input(event):
 	"""Debug keyboard shortcuts for testing"""
 	if event is InputEventKey and event.pressed:
-		if event.keycode >= KEY_1 and event.keycode <= KEY_6:
+		if event. keycode >= KEY_1 and event.keycode <= KEY_6:
 			var index = event.keycode - KEY_1
 			unlock_stamp(index)
-		elif event.keycode == KEY_U:
+		elif event. keycode == KEY_U:
 			print("\n🎯 DEBUG: Unlocking all stamps...")
 			for i in stamps.size():
 				unlock_stamp(i)
 		elif event.keycode == KEY_R:
 			print("\n🔄 DEBUG: Resetting all stamps...")
-			BadgeManager.unlocked_badges.clear()
+			BadgeManager. unlocked_badges.clear()
 			BadgeManager.save_badges()
 			unlocked_badges.clear()
 			for i in stamps.size():
-				stamps[i].texture = _create_atlas_texture("locked")
+				stamps[i]. texture = _create_atlas_texture("locked")
 			print("✅ All stamps reset!")
 		elif event.keycode == KEY_D:
 			print("\n🔍 DEBUG INFO:")
@@ -348,4 +410,4 @@ func _input(event):
 				var badge_id = STAMP_IDS[i]
 				var bm = BadgeManager.is_unlocked(badge_id)
 				var local = badge_id in unlocked_badges
-				print("  %d. %s - BM:%s Local:%s" % [i+1, badge_id, bm, local])
+				print("  %d.  %s - BM:%s Local:%s" % [i+1, badge_id, bm, local])

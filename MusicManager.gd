@@ -17,24 +17,24 @@ const SAVE_FILE = "user://music_library.save"
 
 # Define all available music tracks
 const MUSIC_CATALOG = {
-	"SpringBlossom": {
+	"Blossom": {
 		"name": "Blossom",
 		"file": "res://music/Blossom.mp3",
-		"price": 100,
+		"price": 50,
 		"owned": false,
 		"background_theme": "theme_blossom"  # NEW: Links to sakura background
 	},
 	"Valley": {
 		"name": "Valley",
 		"file": "res://music/Nature.mp3",
-		"price": 150,
+		"price": 100,
 		"owned": false,
 		"background_theme": "theme_valley"  # NEW: Links to grass background
 	},
 	"Horizon": {
 		"name": "Horizon",
 		"file": "res://music/Horizon.mp3",
-		"price": 200,
+		"price": 150,
 		"owned": false,
 		"background_theme": "theme_horizon"  # NEW: Links to cloud background
 	},

@@ -34,6 +34,7 @@ const DEADLINE_WARNING_TIME = 10.0  # When to show warning before deadline
 
 var session_state: SessionState = SessionState.IDLE
 var session_start_time: float = 0.0
+var has_completed_task: bool = false
 var session_pause_time: float = 0.0
 var total_paused_time: float = 0.0
 
@@ -61,7 +62,6 @@ func _process(_delta):
 # ============================================
 
 func start_session() -> void:
-	"""Start a new session or resume a paused one"""
 	if session_state == SessionState.RUNNING:
 		print("⚠️ Session already running!")
 		return
@@ -71,19 +71,19 @@ func start_session() -> void:
 		resume_session()
 		return
 	
-	# Start fresh session
 	print("▶ Starting new session...")
 	session_start_time = Time.get_unix_time_from_system()
 	session_pause_time = 0.0
 	total_paused_time = 0.0
 	session_state = SessionState.RUNNING
 	
-	# Reset deadline tracking
 	deadline_warning_shown = false
 	deadline_expired_shown = false
+	has_completed_task = false
 	
 	session_started.emit()
 	print("✓ Session started")
+
 
 func pause_session() -> void:
 	"""Pause the current session"""
@@ -123,10 +123,15 @@ func stop_session() -> void:
 	# Reset deadline tracking
 	deadline_warning_shown = false
 	deadline_expired_shown = false
+	has_completed_task = false
 	
 	print("✓ Session ended. Total time: %s" % format_time(final_time))
 	
 	session_stopped.emit()
+
+func mark_task_completed() -> void:
+	has_completed_task = true
+	print("✓ Task completed - deadline penalty disabled")
 
 # ============================================
 # TIME CALCULATIONS
@@ -211,12 +216,17 @@ func can_earn_coins() -> bool:
 	var elapsed = get_session_elapsed_time()
 	return elapsed >= MIN_TIME_FOR_COINS
 
-func get_coins_for_task() -> int:
-	"""Get coins for completing a task (checks current deadline status)"""
+func get_coins_for_task(completed_tasks: int = 0) -> int:
+	"""Get coins for completing a task
+	   completed_tasks: number of already completed tasks BEFORE this one"""
 	if not can_earn_coins():
 		return 0
 	
-	# Check current deadline status for every task
+	# If user already completed a task, always give base coins
+	if completed_tasks > 0:
+		return BASE_COINS  # 30 coins
+	
+	# First task: check deadline
 	if is_past_deadline():
 		return LATE_COINS  # 25 coins - deadline exceeded
 	else:
