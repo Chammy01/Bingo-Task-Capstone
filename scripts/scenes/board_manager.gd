@@ -305,8 +305,7 @@ func _get_scheduled_task_counts() -> Dictionary:
 		var arr: Array = saved_scheduled[date_key]
 		var count := 0
 		for t in arr:
-			# Support both string arrays and dictionary arrays (future compatibility)
-			var txt: String = t.get("text", "") if t is Dictionary else str(t)
+			var txt: String = str(t)
 			if txt != "" and txt != "Tap to add task":
 				count += 1
 		counts[date_key] = count
