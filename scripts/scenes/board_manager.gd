@@ -129,10 +129,17 @@ func _load_scheduling_mode():
 	scheduled_tasks = SaveManager.load_scheduled_tasks()
 	
 	if scheduled_tasks.has(date_key):
-		var tasks_for_date = scheduled_tasks[date_key]
-		for i in range(min(tasks_for_date.size(), tiles.size())):
-			tiles[i].set_task_text(tasks_for_date[i])
-		print("✓ Loaded %d existing scheduled tasks for %s" % [tasks_for_date.size(), date_key])
+		var arr = scheduled_tasks[date_key]
+		if arr.size() == tiles.size():
+			# Full positional array: apply tasks by exact index
+			for i in range(tiles.size()):
+				tiles[i].set_task_text(arr[i])
+			print("✓ Loaded %d positional scheduled tasks for %s" % [arr.size(), date_key])
+		else:
+			# Back-compat for older compact arrays: fill sequentially
+			for i in range(min(arr.size(), tiles.size())):
+				tiles[i].set_task_text(arr[i])
+			print("✓ Loaded %d legacy scheduled tasks for %s" % [arr.size(), date_key])
 	else:
 		for tile in tiles:
 			tile.set_task_text("")
@@ -158,23 +165,28 @@ func _save_scheduled_tasks_for_date():
 		return
 	
 	var date_key = "%04d-%02d-%02d" % [scheduling_date.year, scheduling_date.month, scheduling_date.day]
-	var tasks_for_date = []
-	
+	# Save all 9 positions to preserve sticky-note positions
+	var tasks_for_date: Array = []
 	for tile in tiles:
-		var task_text = tile.task_label.text
-		if task_text != "" and task_text != "Tap to add task":
-			tasks_for_date.append(task_text)
+		tasks_for_date.append(tile.task_label.text)
 	
 	scheduled_tasks = SaveManager.load_scheduled_tasks()
 	print("💾 Saving scheduled tasks for %s" % date_key)
-	print("  Tasks to save: %d" % tasks_for_date.size())
+	
+	# Count non-empty tasks for notification and indicator purposes
+	var non_empty := 0
+	for t in tasks_for_date:
+		if t != "" and t != "Tap to add task":
+			non_empty += 1
+	
+	print("  Tasks to save: %d (non-empty: %d)" % [tasks_for_date.size(), non_empty])
 	print("  Existing scheduled dates: %d" % scheduled_tasks.size())
 	
-	if tasks_for_date.size() > 0:
+	if non_empty > 0:
 		scheduled_tasks[date_key] = tasks_for_date
-		print("✓ Saved %d tasks for %s" % [tasks_for_date.size(), date_key])
+		print("✓ Saved %d tasks for %s" % [non_empty, date_key])
 		# Schedule daily reminders for this date
-		NotificationManager.schedule_daily_reminders(date_key, tasks_for_date.size())
+		NotificationManager.schedule_daily_reminders(date_key, non_empty)
 	else:
 		scheduled_tasks.erase(date_key)
 		print("✓ Removed empty schedule for %s" % date_key)
@@ -187,7 +199,12 @@ func _save_scheduled_tasks_for_date():
 		print("⚠️ Failed to save scheduled tasks")
 	
 	for date in scheduled_tasks.keys():
-		print("    - %s: %d tasks" % [date, scheduled_tasks[date].size()])
+		var saved_arr: Array = scheduled_tasks[date]
+		var count := 0
+		for t in saved_arr:
+			if t != "" and t != "Tap to add task":
+				count += 1
+		print("    - %s: %d tasks" % [date, count])
 
 # ============================================
 # CALENDAR INTEGRATION
@@ -196,8 +213,9 @@ func _save_scheduled_tasks_for_date():
 func _on_calendar_pressed():
 	_play_sound(BUTTON_CLICK_SOUND)
 	var calendar = CALENDAR_POPUP.instantiate()
-	get_tree().root.add_child(calendar)
+	# Set data BEFORE adding to tree so _ready() can render indicators immediately
 	calendar.scheduled_tasks = _get_scheduled_task_counts()
+	get_tree().root.add_child(calendar)
 	calendar.date_selected.connect(_on_calendar_date_selected)
 	calendar.popup_closed.connect(func(): calendar.queue_free())
 	print("📅 Calendar opened")
@@ -223,7 +241,12 @@ func _load_and_apply_today_scheduled_tasks():
 	print("  Total scheduled dates: %d" % scheduled_tasks.size())
 	
 	for date_key in scheduled_tasks.keys():
-		print("    - %s: %d task(s)" % [date_key, scheduled_tasks[date_key].size()])
+		var arr: Array = scheduled_tasks[date_key]
+		var count := 0
+		for t in arr:
+			if t != "" and t != "Tap to add task":
+				count += 1
+		print("    - %s: %d task(s)" % [date_key, count])
 	
 	var last_load_date = SaveManager.get_setting("last_scheduled_load_date", "")
 	var is_debug_mode = not debug_date_override.is_empty()
@@ -236,16 +259,23 @@ func _load_and_apply_today_scheduled_tasks():
 		SaveManager.set_setting("last_scheduled_load_date", today_key)
 	
 	if scheduled_tasks.has(today_key):
-		var tasks_for_today = scheduled_tasks[today_key].duplicate()
-		var tile_index = 0
+		var arr = scheduled_tasks[today_key].duplicate()
+		var tasks_loaded := 0
 		
-		print("✓ Found %d scheduled tasks for %s" % [tasks_for_today.size(), today_key])
-		
-		for task_text in tasks_for_today:
-			if tile_index >= tiles.size():
-				break
-			tiles[tile_index].set_task_text(task_text)
-			tile_index += 1
+		if arr.size() == tiles.size():
+			# Full positional array: apply tasks by exact index
+			for i in range(tiles.size()):
+				tiles[i].set_task_text(arr[i])
+				if arr[i] != "" and arr[i] != "Tap to add task":
+					tasks_loaded += 1
+			print("✓ Loaded %d positional scheduled tasks for %s" % [tasks_loaded, today_key])
+		else:
+			# Back-compat for older compact arrays: fill sequentially
+			for i in range(min(arr.size(), tiles.size())):
+				tiles[i].set_task_text(arr[i])
+				if arr[i] != "" and arr[i] != "Tap to add task":
+					tasks_loaded += 1
+			print("✓ Loaded %d legacy scheduled tasks for %s" % [tasks_loaded, today_key])
 		
 		if not is_debug_mode:
 			scheduled_tasks.erase(today_key)
@@ -256,11 +286,11 @@ func _load_and_apply_today_scheduled_tasks():
 		
 		print("  Remaining scheduled dates: %d" % scheduled_tasks.size())
 		
-		if tasks_for_today.size() > 0:
+		if tasks_loaded > 0:
 			if is_debug_mode:
-				Toast.show_toast("🧪 DEBUG: Loaded %d task(s) for %s!" % [tasks_for_today.size(), today_key], 3.0)
+				Toast.show_toast("🧪 DEBUG: Loaded %d task(s) for %s!" % [tasks_loaded, today_key], 3.0)
 			else:
-				Toast.show_toast("📅 Loaded %d task(s) for today!" % tasks_for_today.size(), 2.0)
+				Toast.show_toast("📅 Loaded %d task(s) for today!" % tasks_loaded, 2.0)
 			if not is_debug_mode:
 				save_all_tasks()
 	else:
@@ -272,7 +302,14 @@ func _get_scheduled_task_counts() -> Dictionary:
 	var saved_scheduled = SaveManager.load_scheduled_tasks()
 	var counts = {}
 	for date_key in saved_scheduled.keys():
-		counts[date_key] = saved_scheduled[date_key].size()
+		var arr: Array = saved_scheduled[date_key]
+		var count := 0
+		for t in arr:
+			# Support both string arrays and dictionary arrays (future compatibility)
+			var txt: String = t.get("text", "") if t is Dictionary else str(t)
+			if txt != "" and txt != "Tap to add task":
+				count += 1
+		counts[date_key] = count
 	return counts
 
 # ============================================

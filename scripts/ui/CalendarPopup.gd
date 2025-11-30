@@ -21,7 +21,13 @@ signal popup_closed
 
 var current_month: int = 0
 var current_year: int = 0
-var scheduled_tasks: Dictionary = {}
+var scheduled_tasks: Dictionary = {}: set = set_scheduled_tasks
+var _did_ready := false
+
+func set_scheduled_tasks(value: Dictionary) -> void:
+	scheduled_tasks = value
+	if _did_ready:
+		_build_calendar()
 
 # Animation settings
 const ANIMATION_DURATION = 0.3
@@ -118,7 +124,8 @@ func _ready():
 	if exit_button:
 		exit_button.pressed.connect(_on_exit_pressed)
 	
-	# Build calendar
+	# Mark as ready and build calendar
+	_did_ready = true
 	_build_calendar()
 	
 	# Play entrance animation
