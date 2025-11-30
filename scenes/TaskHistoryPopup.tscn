@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://b3ymqh8k5ntp2"]
 
 [ext_resource type="Script" uid="uid://drtqn2n3l5hfs" path="res://scripts/ui/task_history_popup.gd" id="1_popup"]
-[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://assets/backgrounds/woodenbtn.png" id="2_bg"]
-[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://assets/fonts/MinecraftRegular-Bmg3.otf" id="3_font"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="2_bg"]
+[ext_resource type="FontFile" uid="uid://drkxy4w6in01r" path="res://Fonts/MinecraftRegular-Bmg3.otf" id="3_font"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_close"]
 atlas = ExtResource("2_bg")
@@ -84,9 +84,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -36.0
-offset_top = -44.0
+offset_top = -26.0
 offset_right = 36.0
-offset_bottom = -7.0
+offset_bottom = 48.0
 grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(0.75, 0.75)
