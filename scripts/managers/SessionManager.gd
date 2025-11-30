@@ -216,21 +216,17 @@ func can_earn_coins() -> bool:
 	var elapsed = get_session_elapsed_time()
 	return elapsed >= MIN_TIME_FOR_COINS
 
-func get_coins_for_task(completed_tasks: int = 0) -> int:
-	"""Get coins for completing a task
-	   completed_tasks: number of already completed tasks BEFORE this one"""
+func get_coins_for_task(completion_elapsed: float) -> int:
+	"""Get coins for completing a task based on when it was completed
+	   completion_elapsed: the elapsed session time when the task was completed"""
 	if not can_earn_coins():
 		return 0
 	
-	# If user already completed a task, always give base coins
-	if completed_tasks > 0:
-		return BASE_COINS  # 30 coins
-	
-	# First task: check deadline
-	if is_past_deadline():
-		return LATE_COINS  # 25 coins - deadline exceeded
+	# Check if task was completed before or after the deadline
+	if completion_elapsed <= TASK_DEADLINE:
+		return BASE_COINS  # 30 coins - completed on time
 	else:
-		return BASE_COINS  # 30 coins - still on time
+		return LATE_COINS  # 25 coins - deadline exceeded
 
 func get_session_state_string() -> String:
 	"""Get current session state as string"""

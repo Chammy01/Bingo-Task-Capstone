@@ -21,6 +21,7 @@ var tile_index: int = 0
 
 var is_loading: bool = false
 var coins_earned_for_this_task: bool = false
+var completed_at_elapsed: float = -1.0
 
 var is_sprite_initialized: bool = false
 
@@ -36,7 +37,8 @@ func get_tile_data() -> Dictionary:
 		"text": task_label.text,
 		"completed": is_completed,
 		"color_index": current_texture_index,
-		"coins_earned": coins_earned_for_this_task
+		"coins_earned": coins_earned_for_this_task,
+		"completed_at_elapsed": completed_at_elapsed
 	}
 
 func set_tile_data(data: Dictionary) -> void:
@@ -50,6 +52,8 @@ func set_tile_data(data: Dictionary) -> void:
 		set_sticky_color(data.color_index)
 	if data.has("coins_earned"):
 		coins_earned_for_this_task = data.coins_earned
+	if data.has("completed_at_elapsed"):
+		completed_at_elapsed = data.completed_at_elapsed
 	is_loading = false
 	is_sprite_initialized = true
 
@@ -126,6 +130,7 @@ func unmark_completed():
 	if is_completed:
 		is_completed = false
 		coins_earned_for_this_task = false
+		completed_at_elapsed = -1.0
 		_update_x_mark()
 
 # ============================================
@@ -154,6 +159,7 @@ func set_task_text(new_text: String) -> void:
 	if new_text.is_empty():
 		is_completed = false
 		coins_earned_for_this_task = false
+		completed_at_elapsed = -1.0
 		x_mark.hide()
 
 # ============================================
