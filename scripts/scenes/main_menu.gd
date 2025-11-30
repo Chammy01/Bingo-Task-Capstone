@@ -141,25 +141,7 @@ func _on_settings_closed():
 # ============================================
 
 func _apply_audio_settings():
-	var music_on = SaveManager.get_setting("music_enabled", true)
-	var sfx_on = SaveManager.get_setting("sfx_enabled", true)
-	
-	var music_bus_index = AudioServer.get_bus_index("Music")
-	if music_bus_index == -1:
-		print("⚠️ 'Music' bus not found in AudioServer, using Master bus")
-		music_bus_index = AudioServer.get_bus_index("Master")
-	
-	var sfx_bus_index = AudioServer.get_bus_index("SFX")
-	if sfx_bus_index == -1:
-		print("⚠️ 'SFX' bus not found in AudioServer, using Master bus")
-		sfx_bus_index = AudioServer.get_bus_index("Master")
-	
-	if music_bus_index != -1:
-		AudioServer.set_bus_volume_db(music_bus_index, 0.0 if music_on else -80.0)
-	if sfx_bus_index != -1:
-		AudioServer.set_bus_volume_db(sfx_bus_index, 0.0 if sfx_on else -80.0)
-	
-	print("✓ Audio settings applied: Music=%s, SFX=%s" % [music_on, sfx_on])
+	SettingsManager.apply_audio_settings()
 	
 	# ======================
 	# NOTIFICATIONS

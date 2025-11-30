@@ -1,6 +1,16 @@
 extends Node
 
 # ============================================
+# CONSTANTS
+# ============================================
+
+const GRID_SIZE: int = 9
+const GRID_COLUMNS: int = 3
+const BINGO_BONUS_COINS: int = 50
+const ROW_COL_BONUS_COINS: int = 20
+const STICKY_COLOR_PATTERN: Array[int] = [0, 2, 0, 1, 2, 1, 2, 1, 0]
+
+# ============================================
 # NODE REFERENCES
 # ============================================
 
@@ -37,7 +47,7 @@ const CALENDAR_POPUP = preload("res://scenes/CalendarPopup.tscn")
 # VARIABLES
 # ============================================
 
-var tiles: Array = []
+var tiles: Array[Node] = []
 var scheduled_tasks: Dictionary = {}
 var is_scheduling_mode: bool = false
 var scheduling_date: Dictionary = {}
@@ -402,30 +412,21 @@ func _on_settings_closed():
 	print("⚙️ Settings closed")
 
 func _apply_audio_settings():
-	var music_on = SaveManager.get_setting("music_enabled", true)
-	var sfx_on = SaveManager.get_setting("sfx_enabled", true)
-	var music_bus = AudioServer.get_bus_index("Music")
-	if music_bus >= 0:
-		AudioServer.set_bus_volume_db(music_bus, 0.0 if music_on else -80.0)
-	var sfx_bus = AudioServer.get_bus_index("SFX")
-	if sfx_bus >= 0:
-		AudioServer.set_bus_volume_db(sfx_bus, 0.0 if sfx_on else -80.0)
-	print("✓ Audio settings applied: Music=%s, SFX=%s" % [music_on, sfx_on])
+	SettingsManager.apply_audio_settings()
 
 # ============================================
 # BINGO GRID CREATION
 # ============================================
 
 func create_bingo_grid():
-	for i in 9:
+	for i in GRID_SIZE:
 		var new_tile = BINGO_TILE.instantiate()
 		new_tile.tile_index = i
 		new_tile.edit_requested.connect(on_tile_edit_requested)
 		new_tile.tile_changed.connect(_on_tile_changed)
 		new_tile.request_complete.connect(_on_tile_complete_requested)
 		grid_container.add_child(new_tile)
-		var color_pattern = [0, 2, 0, 1, 2, 1, 2, 1, 0]
-		new_tile.set_sticky_color(color_pattern[i])
+		new_tile.set_sticky_color(STICKY_COLOR_PATTERN[i])
 		tiles.append(new_tile)
 	print("✓ Bingo grid created with %d tiles" % tiles.size())
 
@@ -496,14 +497,14 @@ func _on_tile_complete_requested(tile):
 	var col_complete = tile._check_column_complete()
 	
 	if row_complete and col_complete:
-		CurrencyManager.earn_coins(50, "BINGO bonus")
+		CurrencyManager.earn_coins(BINGO_BONUS_COINS, "BINGO bonus")
 		_play_sound(BINGO_SOUND)
-		Toast.show_toast("🎉 BINGO! +50!", 2.0)
+		Toast.show_toast("🎉 BINGO! +%d!" % BINGO_BONUS_COINS, 2.0)
 		BadgeManager.increment_bingos()
 	elif row_complete or col_complete:
-		CurrencyManager.earn_coins(20, "Row/Col bonus")
+		CurrencyManager.earn_coins(ROW_COL_BONUS_COINS, "Row/Col bonus")
 		_play_sound(COIN_SOUND)
-		Toast.show_toast("🎊 Row/Col +20", 1.5)
+		Toast.show_toast("🎊 Row/Col +%d" % ROW_COL_BONUS_COINS, 1.5)
 		BadgeManager.increment_bingos()
 	
 	_check_badge_unlocks()
@@ -642,7 +643,6 @@ func save_all_tasks() -> void:
 
 func load_saved_tasks() -> void:
 	var saved_data = SaveManager.load_tasks()
-	var color_pattern = [0, 2, 0, 1, 2, 1, 2, 1, 0]
 	if saved_data.size() > 0:
 		for i in range(min(saved_data.size(), tiles.size())):
 			tiles[i].is_loading = true
@@ -651,7 +651,7 @@ func load_saved_tasks() -> void:
 			if saved_data[i].has("completed"):
 				tiles[i].is_completed = saved_data[i].completed
 				tiles[i]._update_x_mark()
-			tiles[i].set_sticky_color(color_pattern[i])
+			tiles[i].set_sticky_color(STICKY_COLOR_PATTERN[i])
 			tiles[i].is_loading = false
 		print("✓ Loaded %d saved tasks from file" % saved_data.size())
 

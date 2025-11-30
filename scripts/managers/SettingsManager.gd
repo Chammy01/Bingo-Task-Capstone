@@ -2,6 +2,17 @@
 # Global autoload for managing app settings
 extends Node
 
+# ============================================
+# DEBUG LOGGING SYSTEM
+# ============================================
+
+const DEBUG_MODE: bool = false
+
+static func debug_log(message: String) -> void:
+	"""Helper function for conditional debug logging"""
+	if DEBUG_MODE:
+		print(message)
+
 # Signals
 signal settings_changed
 signal daily_reset_toggled(enabled: bool)
@@ -217,3 +228,25 @@ func _load_last_reset_date() -> String:
 			file.close()
 			return date
 	return ""
+
+# ============================================
+# AUDIO SETTINGS (Consolidated)
+# ============================================
+
+func apply_audio_settings() -> void:
+	"""Apply audio settings from SaveManager to AudioServer buses"""
+	var music_on = SaveManager.get_setting("music_enabled", true)
+	var sfx_on = SaveManager.get_setting("sfx_enabled", true)
+	
+	_set_bus_volume("Music", music_on)
+	_set_bus_volume("SFX", sfx_on)
+	
+	debug_log("✓ Audio settings applied: Music=%s, SFX=%s" % [music_on, sfx_on])
+
+func _set_bus_volume(bus_name: String, enabled: bool) -> void:
+	"""Helper to set audio bus volume based on enabled state"""
+	var bus_index = AudioServer.get_bus_index(bus_name)
+	if bus_index == -1:
+		debug_log("⚠️ '%s' bus not found in AudioServer" % bus_name)
+		return
+	AudioServer.set_bus_volume_db(bus_index, 0.0 if enabled else -80.0)

@@ -4,6 +4,12 @@ signal edit_requested(tile)
 signal tile_changed(tile)
 signal request_complete(tile)  # ← For BoardManager to handle session/coin check
 
+# ============================================
+# CONSTANTS
+# ============================================
+
+const GRID_COLUMNS: int = 3
+
 @onready var task_label: Label = $TaskLabel
 @onready var x_mark: AnimatedSprite2D = $Xmark
 @onready var double_tap_timer: Timer = $Timer
@@ -23,6 +29,9 @@ var is_loading: bool = false
 var coins_earned_for_this_task: bool = false
 
 var is_sprite_initialized: bool = false
+
+# Cached reference for grid container
+var _grid_container_cached: Node = null
 
 # ============================================
 # DATA FUNCTIONS
@@ -160,41 +169,45 @@ func set_task_text(new_text: String) -> void:
 # BONUS CALCULATION HELPER FUNCTIONS (OPTIONAL)
 # ============================================
 
+func _get_grid_container() -> Node:
+	"""Get cached reference to grid container"""
+	if _grid_container_cached == null:
+		_grid_container_cached = get_node("../../GridContainer")
+	return _grid_container_cached
+
 func _check_row_complete() -> bool:
-	var grid_container = get_node("../../GridContainer")
+	var grid_container = _get_grid_container()
 	if grid_container == null:
 		return false
-	var tiles = grid_container.get_children()
-	if tiles.is_empty():
+	var grid_tiles = grid_container.get_children()
+	if grid_tiles.is_empty():
 		return false
 	var my_index = get_index()
 	@warning_ignore("integer_division")
-	var my_row = my_index / 3
-	var completed_count = 0
-	for i in range(3):
-		var row_tile_index = my_row * 3 + i
-		if row_tile_index >= tiles.size():
+	var my_row = my_index / GRID_COLUMNS
+	for i in range(GRID_COLUMNS):
+		var row_tile_index = my_row * GRID_COLUMNS + i
+		if row_tile_index >= grid_tiles.size():
 			return false
-		var tile = tiles[row_tile_index]
-		if tile.is_completed:
-			completed_count += 1
-	return completed_count == 3
+		var tile = grid_tiles[row_tile_index]
+		if not tile.is_completed:
+			return false  # Early return optimization
+	return true
 
 func _check_column_complete() -> bool:
-	var grid_container = get_node("../../GridContainer")
+	var grid_container = _get_grid_container()
 	if grid_container == null:
 		return false
-	var tiles = grid_container.get_children()
-	if tiles.is_empty():
+	var grid_tiles = grid_container.get_children()
+	if grid_tiles.is_empty():
 		return false
 	var my_index = get_index()
-	var my_col = my_index % 3
-	var completed_count = 0
-	for i in range(3):
-		var col_tile_index = my_col + (i * 3)
-		if col_tile_index >= tiles.size():
+	var my_col = my_index % GRID_COLUMNS
+	for i in range(GRID_COLUMNS):
+		var col_tile_index = my_col + (i * GRID_COLUMNS)
+		if col_tile_index >= grid_tiles.size():
 			return false
-		var tile = tiles[col_tile_index]
-		if tile.is_completed:
-			completed_count += 1
-	return completed_count == 3
+		var tile = grid_tiles[col_tile_index]
+		if not tile.is_completed:
+			return false  # Early return optimization
+	return true
