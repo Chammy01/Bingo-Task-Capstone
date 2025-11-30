@@ -179,11 +179,37 @@ func _get_current_date_key() -> String:
 
 func _get_yesterday_date_key() -> String:
 	"""Get yesterday's date as YYYY-MM-DD string"""
-	var unix_time = Time.get_unix_time_from_system()
-	# Subtract 24 hours (86400 seconds)
-	var yesterday_unix = unix_time - 86400
-	var yesterday = Time.get_datetime_dict_from_unix_time(yesterday_unix)
-	return "%04d-%02d-%02d" % [yesterday.year, yesterday.month, yesterday.day]
+	var today = Time.get_datetime_dict_from_system()
+	# Create yesterday by decrementing day (handles month/year rollover)
+	var day = today.day - 1
+	var month = today.month
+	var year = today.year
+	
+	if day < 1:
+		month -= 1
+		if month < 1:
+			month = 12
+			year -= 1
+		# Get days in previous month
+		var days_in_prev_month = _get_days_in_month(month, year)
+		day = days_in_prev_month
+	
+	return "%04d-%02d-%02d" % [year, month, day]
+
+func _get_days_in_month(month: int, year: int) -> int:
+	"""Get the number of days in a given month"""
+	match month:
+		1, 3, 5, 7, 8, 10, 12:
+			return 31
+		4, 6, 9, 11:
+			return 30
+		2:
+			# Check for leap year
+			if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+				return 29
+			return 28
+		_:
+			return 30  # Fallback
 
 # ============================================
 # PUBLIC API
