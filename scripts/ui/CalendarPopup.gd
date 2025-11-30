@@ -308,15 +308,14 @@ func _create_day_button(day: int, today: Dictionary) -> TextureButton:
 	
 	# Handle past dates - clickable with history indicators
 	if is_past:
-		# Apply subtle tint for past dates (still clickable)
-		day_button.modulate = Color(0.9, 0.9, 0.95)
-		
-		# Add history indicator if available
-		if task_history_summary.has(date_string):
-			var summary = task_history_summary[date_string]
-			_add_history_indicator(day_button, summary.completed, summary.total)
-		
-		# Connect to past date handler
+		day_button.disabled = false
+		day_button.modulate = Color(0.65, 0.65, 0.65, 1.0)
+		day_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	if task_history_summary.has(date_string):
+		var summary = task_history_summary[date_string]
+		_add_history_indicator(day_button, summary.completed, summary.total)
+
 		day_button.pressed.connect(func(): _on_past_date_selected(day))
 	else:
 		# Highlight today
@@ -352,7 +351,7 @@ func _add_task_indicator(day_button: TextureButton, task_count: int):
 		badge.add_theme_color_override("font_color", Color.WHITE)
 		badge.add_theme_color_override("font_outline_color", Color.BLACK)
 		badge.add_theme_constant_override("outline_size", 4)
-		badge.position = Vector2(88, 0)
+		badge.position = Vector2(98.5, 3)
 		day_button.add_child(badge)
 
 func _add_history_indicator(day_button: TextureButton, completed: int, total: int):

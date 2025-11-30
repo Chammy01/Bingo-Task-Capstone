@@ -214,12 +214,13 @@ func _save_scheduled_tasks_for_date():
 func _on_calendar_pressed():
 	_play_sound(BUTTON_CLICK_SOUND)
 	var calendar = CALENDAR_POPUP.instantiate()
-	# Set data BEFORE adding to tree so _ready() can render indicators immediately
 	calendar.scheduled_tasks = _get_scheduled_task_counts()
-	calendar.task_history_summary = SaveManager.get_task_history_summary()
+	if calendar.has_method("set_task_history_summary"):
+		calendar.set_task_history_summary(SaveManager.get_task_history_summary())
 	get_tree().root.add_child(calendar)
 	calendar.date_selected.connect(_on_calendar_date_selected)
-	calendar.past_date_selected.connect(_on_calendar_past_date_selected)
+	if calendar.has_signal("past_date_selected"):
+		calendar.past_date_selected.connect(_on_calendar_past_date_selected)
 	calendar.popup_closed.connect(func(): calendar.queue_free())
 	print("📅 Calendar opened")
 
