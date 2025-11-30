@@ -90,6 +90,9 @@ func _ready():
 	SessionManager.deadline_warning.connect(_on_deadline_warning)
 	SessionManager.deadline_expired.connect(_on_deadline_expired)
 	
+	# Connect to daily reset signal
+	DailyResetManager.daily_reset_triggered.connect(_on_daily_reset)
+	
 	play_button.pressed.connect(_on_play_button_pressed)
 	pause_button.pressed.connect(_on_pause_button_pressed)
 	reset_button.pressed.connect(_on_reset_button_pressed)
@@ -442,6 +445,42 @@ func _on_deadline_expired():
 		print("⚠️ Deadline has expired! (%d incomplete tasks)" % incomplete_count)
 	else:
 		print("⚠️ Deadline passed but all tasks complete")
+
+# ============================================
+# DAILY RESET HANDLER
+# ============================================
+
+func _on_daily_reset():
+	"""Handle daily reset triggered by DailyResetManager"""
+	print("🔄 Daily reset received - reloading board...")
+	
+	# Skip reset handling if in scheduling mode
+	if is_scheduling_mode:
+		print("  ⚠️ In scheduling mode - ignoring daily reset")
+		return
+	
+	# Stop any running session
+	if SessionManager.is_running() or SessionManager.is_paused():
+		SessionManager.stop_session()
+	
+	# Clear all tiles
+	for tile in tiles:
+		tile.is_loading = true
+		tile.set_task_text("")
+		tile.is_completed = false
+		tile._update_x_mark()
+		tile.is_loading = false
+	
+	# Load scheduled tasks for new day
+	_load_and_apply_today_scheduled_tasks()
+	
+	# Update UI
+	_update_progress_display()
+	
+	# Save the fresh state
+	save_all_tasks()
+	
+	print("✓ Board refreshed for new day")
 
 # ============================================
 # SETTINGS FUNCTIONS

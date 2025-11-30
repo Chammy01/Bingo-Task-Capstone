@@ -33,6 +33,7 @@ BadgeManager="*res://scripts/managers/BadgeManager.gd"
 MusicManager="*res://scripts/managers/MusicManager.gd"
 ThemeManager="*res://scripts/managers/ThemeManager.gd"
 NotificationManager="*res://scripts/managers/NotificationManager.gd"
+DailyResetManager="*res://scripts/managers/DailyResetManager.gd"
 
 [display]
 

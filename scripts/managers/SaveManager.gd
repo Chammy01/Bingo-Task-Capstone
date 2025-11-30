@@ -353,3 +353,33 @@ func print_save_locations():
 	print("Settings: %s" % SETTINGS_SAVE_PATH)
 	print("Task History: %s" % TASK_HISTORY_SAVE_PATH)
 	print("==============================\n")
+
+# ============================================
+# DAILY RESET HELPERS
+# ============================================
+
+func clear_daily_tasks() -> bool:
+	"""Clear the tasks.save file (set to empty array)"""
+	var file = FileAccess.open(TASKS_SAVE_PATH, FileAccess.WRITE)
+	if file == null:
+		push_error("Failed to clear daily tasks: " + str(FileAccess.get_open_error()))
+		return false
+	
+	var save_data = {
+		"version": "1.0",
+		"saved_at": Time.get_datetime_string_from_system(),
+		"tasks": []
+	}
+	
+	file.store_var(save_data)
+	file.close()
+	print("🗑️ Daily tasks cleared")
+	return true
+
+func get_last_reset_date() -> String:
+	"""Return the last date when daily reset occurred"""
+	return get_setting("last_reset_date", "")
+
+func set_last_reset_date(date_key: String):
+	"""Save the date of last reset"""
+	save_setting("last_reset_date", date_key)
