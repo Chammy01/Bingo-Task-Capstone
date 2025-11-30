@@ -8,6 +8,7 @@ const TASKS_SAVE_PATH = "user://tasks.save"
 const SCHEDULED_TASKS_SAVE_PATH = "user://scheduled_tasks.save"
 const SETTINGS_SAVE_PATH = "user://settings.save"
 const SESSION_SAVE_PATH = "user://session.save"
+const TASK_HISTORY_SAVE_PATH = "user://task_history.save"
 
 # ============================================
 # CACHE
@@ -15,6 +16,7 @@ const SESSION_SAVE_PATH = "user://session.save"
 
 var _settings_cache: Dictionary = {}
 var _scheduled_tasks_cache: Dictionary = {}
+var _task_history_cache: Dictionary = {}
 
 # ============================================
 # INITIALIZATION
@@ -26,13 +28,16 @@ func _ready():
 	print("  Tasks: %s" % TASKS_SAVE_PATH)
 	print("  Scheduled: %s" % SCHEDULED_TASKS_SAVE_PATH)
 	print("  Settings: %s" % SETTINGS_SAVE_PATH)
+	print("  Task History: %s" % TASK_HISTORY_SAVE_PATH)
 
 func _load_all_caches():
 	"""Load all save files into memory on startup"""
 	_settings_cache = _load_dictionary(SETTINGS_SAVE_PATH)
 	_scheduled_tasks_cache = _load_dictionary(SCHEDULED_TASKS_SAVE_PATH)
+	_task_history_cache = _load_dictionary(TASK_HISTORY_SAVE_PATH)
 	print("  Loaded %d settings" % _settings_cache.size())
 	print("  Loaded %d scheduled dates" % _scheduled_tasks_cache.get("scheduled_tasks", {}).size())
+	print("  Loaded %d history dates" % _task_history_cache.get("history", {}).size())
 
 # ============================================
 # TASKS (Daily Board)
@@ -122,6 +127,99 @@ func load_scheduled_tasks() -> Dictionary:
 		return tasks
 	
 	return {}
+
+# ============================================
+# TASK HISTORY (Daily Archive)
+# ============================================
+
+func save_task_history(date_key: String, tasks_data: Array) -> bool:
+	"""Save task history for a specific date (YYYY-MM-DD)"""
+	var history = _task_history_cache.get("history", {})
+	
+	history[date_key] = {
+		"tasks": tasks_data,
+		"saved_at": Time.get_datetime_string_from_system()
+	}
+	
+	var save_data = {
+		"version": "1.0",
+		"saved_at": Time.get_datetime_string_from_system(),
+		"history": history
+	}
+	
+	var file = FileAccess.open(TASK_HISTORY_SAVE_PATH, FileAccess.WRITE)
+	if file == null:
+		push_error("Failed to save task history: " + str(FileAccess.get_open_error()))
+		return false
+	
+	file.store_var(save_data)
+	file.close()
+	
+	_task_history_cache = save_data
+	print("📅 Task history saved for %s" % date_key)
+	return true
+
+func load_all_task_history() -> Dictionary:
+	"""Load all task history, returns { date_key: { tasks: Array, saved_at: String } }"""
+	if not FileAccess.file_exists(TASK_HISTORY_SAVE_PATH):
+		return {}
+	
+	var file = FileAccess.open(TASK_HISTORY_SAVE_PATH, FileAccess.READ)
+	if file == null:
+		push_error("Failed to load task history: " + str(FileAccess.get_open_error()))
+		return {}
+	
+	var save_data = file.get_var()
+	file.close()
+	
+	if save_data is Dictionary and save_data.has("history"):
+		_task_history_cache = save_data
+		return save_data.history
+	
+	return {}
+
+func get_task_history_for_date(date_key: String) -> Dictionary:
+	"""Get task history for a specific date, returns { tasks: Array, saved_at: String } or empty"""
+	var history = _task_history_cache.get("history", {})
+	if history.has(date_key):
+		return history[date_key]
+	
+	# Try loading from file if not in cache
+	var all_history = load_all_task_history()
+	if all_history.has(date_key):
+		return all_history[date_key]
+	
+	return {}
+
+func get_task_history_summary() -> Dictionary:
+	"""Get summary for calendar indicators, returns { date_key: { completed: int, total: int } }"""
+	var history = _task_history_cache.get("history", {})
+	if history.is_empty():
+		history = load_all_task_history()
+	
+	var summary = {}
+	for date_key in history.keys():
+		var entry = history[date_key]
+		if not entry.has("tasks"):
+			continue
+		
+		var tasks: Array = entry.tasks
+		var completed := 0
+		var total := 0
+		
+		for task in tasks:
+			if task is Dictionary and task.has("text"):
+				var text: String = task.text
+				if text != "" and text != "Tap to add task":
+					total += 1
+					if task.has("completed") and task.completed:
+						completed += 1
+		
+		if total > 0:
+			summary[date_key] = { "completed": completed, "total": total }
+	
+	return summary
+
 
 # ============================================
 # SETTINGS (Generic Key-Value Storage)
@@ -227,8 +325,10 @@ func clear_all_saves():
 	DirAccess.remove_absolute(SCHEDULED_TASKS_SAVE_PATH)
 	DirAccess.remove_absolute(SETTINGS_SAVE_PATH)
 	DirAccess.remove_absolute(SESSION_SAVE_PATH)
+	DirAccess.remove_absolute(TASK_HISTORY_SAVE_PATH)
 	_settings_cache.clear()
 	_scheduled_tasks_cache.clear()
+	_task_history_cache.clear()
 	print("🗑️ All save files cleared")
 
 func get_save_file_info() -> Dictionary:
@@ -237,9 +337,11 @@ func get_save_file_info() -> Dictionary:
 		"tasks_exists": FileAccess.file_exists(TASKS_SAVE_PATH),
 		"scheduled_exists": FileAccess.file_exists(SCHEDULED_TASKS_SAVE_PATH),
 		"settings_exists": FileAccess.file_exists(SETTINGS_SAVE_PATH),
+		"history_exists": FileAccess.file_exists(TASK_HISTORY_SAVE_PATH),
 		"tasks_path": TASKS_SAVE_PATH,
 		"scheduled_path": SCHEDULED_TASKS_SAVE_PATH,
-		"settings_path": SETTINGS_SAVE_PATH
+		"settings_path": SETTINGS_SAVE_PATH,
+		"history_path": TASK_HISTORY_SAVE_PATH
 	}
 
 func print_save_locations():
@@ -249,4 +351,5 @@ func print_save_locations():
 	print("Tasks: %s" % TASKS_SAVE_PATH)
 	print("Scheduled: %s" % SCHEDULED_TASKS_SAVE_PATH)
 	print("Settings: %s" % SETTINGS_SAVE_PATH)
+	print("Task History: %s" % TASK_HISTORY_SAVE_PATH)
 	print("==============================\n")

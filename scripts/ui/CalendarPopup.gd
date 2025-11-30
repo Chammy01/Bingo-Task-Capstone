@@ -1,6 +1,7 @@
 extends Control
 
 signal date_selected(date: Dictionary)
+signal past_date_selected(date: Dictionary, history: Dictionary)
 signal popup_closed
 
 # ============================================
@@ -22,10 +23,16 @@ signal popup_closed
 var current_month: int = 0
 var current_year: int = 0
 var scheduled_tasks: Dictionary = {}: set = set_scheduled_tasks
+var task_history_summary: Dictionary = {}: set = set_task_history_summary
 var _did_ready := false
 
 func set_scheduled_tasks(value: Dictionary) -> void:
 	scheduled_tasks = value
+	if _did_ready:
+		_build_calendar()
+
+func set_task_history_summary(value: Dictionary) -> void:
+	task_history_summary = value
 	if _did_ready:
 		_build_calendar()
 
@@ -295,22 +302,33 @@ func _create_day_button(day: int, today: Dictionary) -> TextureButton:
 	day_button.ignore_texture_size = true
 	day_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	
-	# Add task indicator if scheduled
 	var date_string = _get_date_string(day, current_month, current_year)
-	if scheduled_tasks.has(date_string) and scheduled_tasks[date_string] > 0:
-		_add_task_indicator(day_button, scheduled_tasks[date_string])
+	var is_past = _is_past_date(day, current_month, current_year, today)
+	var is_today_date = _is_today(day, current_month, current_year, today)
 	
-	# Highlight today
-	if _is_today(day, current_month, current_year, today):
-		day_button.modulate = Color(1.0, 0.95, 0.7)
-	
-	# Disable past dates
-	if _is_past_date(day, current_month, current_year, today):
-		day_button.disabled = true
-		day_button.modulate = Color(0.6, 0.6, 0.6)
-	
-	# Connect click
-	day_button.pressed.connect(func(): _on_day_selected(day))
+	# Handle past dates - clickable with history indicators
+	if is_past:
+		# Apply subtle tint for past dates (still clickable)
+		day_button.modulate = Color(0.9, 0.9, 0.95)
+		
+		# Add history indicator if available
+		if task_history_summary.has(date_string):
+			var summary = task_history_summary[date_string]
+			_add_history_indicator(day_button, summary.completed, summary.total)
+		
+		# Connect to past date handler
+		day_button.pressed.connect(func(): _on_past_date_selected(day))
+	else:
+		# Highlight today
+		if is_today_date:
+			day_button.modulate = Color(1.0, 0.95, 0.7)
+		
+		# Add task indicator if scheduled (future dates)
+		if scheduled_tasks.has(date_string) and scheduled_tasks[date_string] > 0:
+			_add_task_indicator(day_button, scheduled_tasks[date_string])
+		
+		# Connect to future date handler
+		day_button.pressed.connect(func(): _on_day_selected(day))
 	
 	return day_button
 
@@ -337,6 +355,40 @@ func _add_task_indicator(day_button: TextureButton, task_count: int):
 		badge.position = Vector2(88, 0)
 		day_button.add_child(badge)
 
+func _add_history_indicator(day_button: TextureButton, completed: int, total: int):
+	"""Add colored indicator for past date task history"""
+	if total <= 0:
+		return
+	
+	# Determine indicator color based on completion status
+	var indicator_color: Color
+	if completed == total:
+		# Green: all completed
+		indicator_color = Color(0.2, 0.8, 0.2)
+	elif completed > 0:
+		# Orange: partial completion
+		indicator_color = Color(1.0, 0.5, 0.2)
+	else:
+		# Red: none completed
+		indicator_color = Color(0.9, 0.2, 0.2)
+	
+	# Create indicator dot
+	var indicator = ColorRect.new()
+	indicator.custom_minimum_size = Vector2(20, 20)
+	indicator.color = indicator_color
+	indicator.position = Vector2(95, 5)
+	day_button.add_child(indicator)
+	
+	# Add completion count badge
+	var badge = Label.new()
+	badge.text = "%d/%d" % [completed, total]
+	badge.add_theme_font_size_override("font_size", 16)
+	badge.add_theme_color_override("font_color", Color.WHITE)
+	badge.add_theme_color_override("font_outline_color", Color.BLACK)
+	badge.add_theme_constant_override("outline_size", 3)
+	badge.position = Vector2(75, 0)
+	day_button.add_child(badge)
+
 # ============================================
 # SIGNAL HANDLERS
 # ============================================
@@ -349,6 +401,18 @@ func _on_day_selected(day: int):
 	}
 	print("📅 Date selected: %s/%s/%s" % [current_month, day, current_year])
 	emit_signal("date_selected", selected_date)
+	await _close_popup()
+
+func _on_past_date_selected(day: int):
+	var selected_date = {
+		"day": day,
+		"month": current_month,
+		"year": current_year
+	}
+	var date_string = _get_date_string(day, current_month, current_year)
+	var history = SaveManager.get_task_history_for_date(date_string)
+	print("📅 Past date selected: %s/%s/%s" % [current_month, day, current_year])
+	emit_signal("past_date_selected", selected_date, history)
 	await _close_popup()
 
 func _on_prev_month():

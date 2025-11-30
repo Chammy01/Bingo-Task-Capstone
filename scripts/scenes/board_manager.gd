@@ -32,6 +32,7 @@ const SUCCESS_SOUND = preload("res://assets/audio/notification-alert.mp3")
 const DEADLINE_WARNING_SOUND = preload("res://assets/audio/notification-alert.mp3")
 const DEADLINE_EXPIRED_SOUND = preload("res://assets/audio/notification-error.mp3")
 const CALENDAR_POPUP = preload("res://scenes/CalendarPopup.tscn")
+const TASK_HISTORY_POPUP = preload("res://scenes/TaskHistoryPopup.tscn")
 
 # ============================================
 # VARIABLES
@@ -215,8 +216,10 @@ func _on_calendar_pressed():
 	var calendar = CALENDAR_POPUP.instantiate()
 	# Set data BEFORE adding to tree so _ready() can render indicators immediately
 	calendar.scheduled_tasks = _get_scheduled_task_counts()
+	calendar.task_history_summary = SaveManager.get_task_history_summary()
 	get_tree().root.add_child(calendar)
 	calendar.date_selected.connect(_on_calendar_date_selected)
+	calendar.past_date_selected.connect(_on_calendar_past_date_selected)
 	calendar.popup_closed.connect(func(): calendar.queue_free())
 	print("📅 Calendar opened")
 
@@ -231,6 +234,14 @@ func _on_calendar_date_selected(date: Dictionary):
 	]
 	Toast.show_toast("📅 Loading board for %s..." % date_string, 1.5)
 	get_tree().reload_current_scene()
+
+func _on_calendar_past_date_selected(date: Dictionary, history: Dictionary):
+	var popup = TASK_HISTORY_POPUP.instantiate()
+	get_tree().root.add_child(popup)
+	popup.setup(date, history)
+	var month_name = ["January", "February", "March", "April", "May", "June", 
+		"July", "August", "September", "October", "November", "December"][date.month - 1]
+	Toast.show_toast("Task history for %s %d, %d" % [month_name, date.day, date.year], 2.0)
 
 func _load_and_apply_today_scheduled_tasks():
 	scheduled_tasks = SaveManager.load_scheduled_tasks()
@@ -673,8 +684,29 @@ func save_all_tasks() -> void:
 		tasks_data.append(tile.get_tile_data())
 	if SaveManager.save_tasks(tasks_data):
 		print("✓ Tasks saved to file")
+		_save_to_task_history()
 	else:
 		print("⚠️ Failed to save tasks")
+
+func _save_to_task_history() -> void:
+	"""Save current task state to task history for today's date"""
+	var today = _get_current_date()
+	var date_key = "%04d-%02d-%02d" % [today.year, today.month, today.day]
+	
+	var tasks_data = []
+	var has_task := false
+	for tile in tiles:
+		var tile_data = tile.get_tile_data()
+		tasks_data.append(tile_data)
+		if tile_data.has("text"):
+			var text: String = tile_data.text
+			if text != "" and text != "Tap to add task":
+				has_task = true
+	
+	# Only save history if there's at least one non-empty task
+	if has_task:
+		SaveManager.save_task_history(date_key, tasks_data)
+		print("📅 Task history archived for %s" % date_key)
 
 func load_saved_tasks() -> void:
 	var saved_data = SaveManager.load_tasks()
