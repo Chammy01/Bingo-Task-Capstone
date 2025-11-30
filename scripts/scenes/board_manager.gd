@@ -537,9 +537,8 @@ func _on_tile_complete_requested(tile):
 		Toast.show_toast("⏳ Keep working! %ds" % remaining, 1.0)
 		return
 	
-	# Record completion timestamp if not already set
-	if tile.completed_at_elapsed < 0:
-		tile.completed_at_elapsed = SessionManager.get_session_elapsed_time()
+	# Record completion timestamp at the exact moment of completion
+	tile.completed_at_elapsed = SessionManager.get_session_elapsed_time()
 	
 	_play_sound(COIN_SOUND)
 	var coins_earned = SessionManager.get_coins_for_task(tile.completed_at_elapsed)

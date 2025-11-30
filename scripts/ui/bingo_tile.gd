@@ -130,6 +130,7 @@ func unmark_completed():
 	if is_completed:
 		is_completed = false
 		coins_earned_for_this_task = false
+		completed_at_elapsed = -1.0
 		_update_x_mark()
 
 # ============================================
