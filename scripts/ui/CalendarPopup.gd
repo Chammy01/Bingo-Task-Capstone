@@ -305,29 +305,32 @@ func _create_day_button(day: int, today: Dictionary) -> TextureButton:
 	var date_string = _get_date_string(day, current_month, current_year)
 	var is_past = _is_past_date(day, current_month, current_year, today)
 	var is_today_date = _is_today(day, current_month, current_year, today)
-	
-	# Handle past dates - clickable with history indicators
+
+	# Visuals for past dates
 	if is_past:
 		day_button.disabled = false
 		day_button.modulate = Color(0.65, 0.65, 0.65, 1.0)
 		day_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-	if task_history_summary.has(date_string):
-		var summary = task_history_summary[date_string]
-		_add_history_indicator(day_button, summary.completed, summary.total)
-
+		# Add history indicator if available
+		if task_history_summary.has(date_string):
+			var summary = task_history_summary[date_string]
+			_add_history_indicator(day_button, summary.completed, summary.total)
+		
+		# Always route past dates to history view (even if no indicator)
 		day_button.pressed.connect(func(): _on_past_date_selected(day))
 	else:
-		# Highlight today
+		# Today highlight
 		if is_today_date:
 			day_button.modulate = Color(1.0, 0.95, 0.7)
 		
-		# Add task indicator if scheduled (future dates)
+		# Future task indicator
 		if scheduled_tasks.has(date_string) and scheduled_tasks[date_string] > 0:
 			_add_task_indicator(day_button, scheduled_tasks[date_string])
 		
-		# Connect to future date handler
+		# Route today and future to planning
 		day_button.pressed.connect(func(): _on_day_selected(day))
+
 	
 	return day_button
 
