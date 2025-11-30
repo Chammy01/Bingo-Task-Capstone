@@ -362,22 +362,22 @@ func _add_history_indicator(day_button: TextureButton, completed: int, total: in
 # SIGNAL HANDLERS
 # ============================================
 
-func _on_day_selected(day: int):
-	var selected_date = {
+func _create_date_dict(day: int) -> Dictionary:
+	"""Helper to create date dictionary"""
+	return {
 		"day": day,
 		"month": current_month,
 		"year": current_year
 	}
+
+func _on_day_selected(day: int):
+	var selected_date = _create_date_dict(day)
 	print("📅 Date selected: %s/%s/%s" % [current_month, day, current_year])
 	emit_signal("date_selected", selected_date)
 	await _close_popup()
 
 func _on_past_date_selected(day: int):
-	var selected_date = {
-		"day": day,
-		"month": current_month,
-		"year": current_year
-	}
+	var selected_date = _create_date_dict(day)
 	var date_string = _get_date_string(day, current_month, current_year)
 	var history = SaveManager.get_task_history_for_date(date_string)
 	
