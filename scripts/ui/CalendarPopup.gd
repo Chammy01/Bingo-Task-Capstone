@@ -1,6 +1,7 @@
 extends Control
 
 signal date_selected(date: Dictionary)
+signal past_date_selected(date: Dictionary, history: Dictionary)
 signal popup_closed
 
 # ============================================
@@ -22,6 +23,7 @@ signal popup_closed
 var current_month: int = 0
 var current_year: int = 0
 var scheduled_tasks: Dictionary = {}
+var task_history_summary: Dictionary = {}
 
 # Animation settings
 const ANIMATION_DURATION = 0.3
@@ -288,7 +290,7 @@ func _create_day_button(day: int, today: Dictionary) -> TextureButton:
 	day_button.ignore_texture_size = true
 	day_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	
-	# Add task indicator if scheduled
+	# Add task indicator if scheduled (for future dates)
 	var date_string = _get_date_string(day, current_month, current_year)
 	if scheduled_tasks.has(date_string) and scheduled_tasks[date_string] > 0:
 		_add_task_indicator(day_button, scheduled_tasks[date_string])
@@ -297,13 +299,22 @@ func _create_day_button(day: int, today: Dictionary) -> TextureButton:
 	if _is_today(day, current_month, current_year, today):
 		day_button.modulate = Color(1.0, 0.95, 0.7)
 	
-	# Disable past dates
+	# Handle past dates - make clickable for history view
 	if _is_past_date(day, current_month, current_year, today):
-		day_button.disabled = true
-		day_button.modulate = Color(0.6, 0.6, 0.6)
-	
-	# Connect click
-	day_button.pressed.connect(func(): _on_day_selected(day))
+		# Keep clickable but style differently (slightly faded, not grey)
+		day_button.disabled = false
+		day_button.modulate = Color(0.9, 0.9, 0.95)  # Subtle blue tint for past
+		
+		# Check if we have history for this date
+		if task_history_summary.has(date_string):
+			var summary = task_history_summary[date_string]
+			_add_history_indicator(day_button, summary.completed, summary.total)
+		
+		# Connect to history view
+		day_button.pressed.connect(func(): _on_past_date_selected(day))
+	else:
+		# Future date - keep existing scheduling behavior
+		day_button.pressed.connect(func(): _on_day_selected(day))
 	
 	return day_button
 
@@ -330,6 +341,23 @@ func _add_task_indicator(day_button: TextureButton, task_count: int):
 		badge.position = Vector2(88, 0)
 		day_button.add_child(badge)
 
+func _add_history_indicator(day_button: TextureButton, completed: int, total: int):
+	"""Add completion indicator for past dates with history"""
+	var indicator = Label.new()
+	indicator.text = "%d/%d" % [completed, total]
+	indicator.add_theme_font_size_override("font_size", 18)
+	
+	# Color based on completion
+	if completed == total and total > 0:
+		indicator.add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))  # Green for complete
+	elif completed > 0:
+		indicator.add_theme_color_override("font_color", Color(1.0, 0.7, 0.2))  # Orange for partial
+	else:
+		indicator.add_theme_color_override("font_color", Color(0.8, 0.3, 0.3))  # Red for none
+	
+	indicator.position = Vector2(5, 90)
+	day_button.add_child(indicator)
+
 # ============================================
 # SIGNAL HANDLERS
 # ============================================
@@ -342,6 +370,19 @@ func _on_day_selected(day: int):
 	}
 	print("📅 Date selected: %s/%s/%s" % [current_month, day, current_year])
 	emit_signal("date_selected", selected_date)
+	await _close_popup()
+
+func _on_past_date_selected(day: int):
+	var selected_date = {
+		"day": day,
+		"month": current_month,
+		"year": current_year
+	}
+	var date_string = _get_date_string(day, current_month, current_year)
+	var history = SaveManager.get_task_history_for_date(date_string)
+	
+	print("📜 Past date selected: %s" % date_string)
+	emit_signal("past_date_selected", selected_date, history)
 	await _close_popup()
 
 func _on_prev_month():
