@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://be6gdyo0hwoca"
-path="res://.godot/imported/sakura.png-47aac283299352381ff466e874ec8bfa.ctex"
+path="res://.godot/imported/sakura.png-01c65d5f4c27ff7134b99cb2c77d7964.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Background/sakura.png"
-dest_files=["res://.godot/imported/sakura.png-47aac283299352381ff466e874ec8bfa.ctex"]
+source_file="res://assets/backgrounds/sakura.png"
+dest_files=["res://.godot/imported/sakura.png-01c65d5f4c27ff7134b99cb2c77d7964.ctex"]
 
 [params]
 

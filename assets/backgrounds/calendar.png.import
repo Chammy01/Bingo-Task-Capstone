@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b5gqmak2jbajv"
-path="res://.godot/imported/calendar.png-0cf4725fbdbfb5d668c26fa1e2ed8806.ctex"
+path="res://.godot/imported/calendar.png-cf924a49d65db7d1947b22162383bb7b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Background/calendar.png"
-dest_files=["res://.godot/imported/calendar.png-0cf4725fbdbfb5d668c26fa1e2ed8806.ctex"]
+source_file="res://assets/backgrounds/calendar.png"
+dest_files=["res://.godot/imported/calendar.png-cf924a49d65db7d1947b22162383bb7b.ctex"]
 
 [params]
 

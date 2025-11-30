@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cehi3m4enkofb"
-path="res://.godot/imported/green_sticky.png-b239da5827aecf20e0212ad96618c4f8.ctex"
+path="res://.godot/imported/green_sticky.png-7ae4de92e1acaeaf11cacc52b65057f9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Background/green_sticky.png"
-dest_files=["res://.godot/imported/green_sticky.png-b239da5827aecf20e0212ad96618c4f8.ctex"]
+source_file="res://assets/backgrounds/green_sticky.png"
+dest_files=["res://.godot/imported/green_sticky.png-7ae4de92e1acaeaf11cacc52b65057f9.ctex"]
 
 [params]
 
