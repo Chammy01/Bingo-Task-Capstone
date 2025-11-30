@@ -430,9 +430,18 @@ func _on_deadline_warning(seconds_remaining: int):
 	print("⚠️ Deadline warning: %d seconds remaining" % seconds_remaining)
 
 func _on_deadline_expired():
-	_play_sound(DEADLINE_EXPIRED_SOUND)
-	Toast.show_toast("⚠️ Deadline expired! 25 coins only", 2.0)
-	print("⚠️ Deadline has expired!")
+	# Only show warning for incomplete tiles
+	var incomplete_count = 0
+	for tile in tiles:
+		if not tile.is_completed:
+			incomplete_count += 1
+	
+	if incomplete_count > 0:
+		_play_sound(DEADLINE_EXPIRED_SOUND)
+		Toast.show_toast("⚠️ Deadline expired! 25 coins only", 2.0)
+		print("⚠️ Deadline has expired! (%d incomplete tasks)" % incomplete_count)
+	else:
+		print("⚠️ Deadline passed but all tasks complete")
 
 # ============================================
 # SETTINGS FUNCTIONS
@@ -516,6 +525,9 @@ func _on_tile_complete_requested(tile):
 	if tile.is_completed:
 		Toast.show_toast("✅ Already completed!", 1.0)
 		return
+	if tile.coins_earned_for_this_task:
+		Toast.show_toast("🪙 Already rewarded!", 1.0)
+		return
 	if not SessionManager.is_running():
 		Toast.show_toast("⚠️ Start the session first!")
 		return
@@ -525,13 +537,18 @@ func _on_tile_complete_requested(tile):
 		Toast.show_toast("⏳ Keep working! %ds" % remaining, 1.0)
 		return
 	
+	# Record completion timestamp if not already set
+	if tile.completed_at_elapsed < 0:
+		tile.completed_at_elapsed = SessionManager.get_session_elapsed_time()
+	
 	_play_sound(COIN_SOUND)
-	var coins_earned = SessionManager.get_coins_for_task()
+	var coins_earned = SessionManager.get_coins_for_task(tile.completed_at_elapsed)
 	
 	if coins_earned > 0:
+		var reason = "Task completed on time" if tile.completed_at_elapsed <= SessionManager.TASK_DEADLINE else "Task completed late"
 		Toast.show_toast("🪙 +%d Coins!" % coins_earned, 2.0)
-		CurrencyManager.earn_coins(coins_earned, "Task completed")
-		print("Task completed! Earned %d coins" % coins_earned)
+		CurrencyManager.earn_coins(coins_earned, reason)
+		print("Task completed! Earned %d coins (%s)" % [coins_earned, reason])
 	else:
 		Toast.show_toast("⏳ Too early! Keep working", 1.5)
 		return
