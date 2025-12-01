@@ -1,15 +1,15 @@
 [gd_scene load_steps=13 format=3 uid="uid://cb1lgq7ks5mt2"]
 
-[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://assets/backgrounds/woodenbtn.png" id="1_rpmj3"]
-[ext_resource type="Script" uid="uid://cs52jm1pdk8od" path="res://scripts/ui/settings_popup.gd" id="1_suvqx"]
-[ext_resource type="FontFile" uid="uid://cobthugrtjcsy" path="res://assets/fonts/NewPixelFont.tres" id="2_qcyvy"]
+[ext_resource type="Texture2D" uid="uid://n3n1ffnai3ge" path="res://Background/woodenbtn.png" id="1_rpmj3"]
+[ext_resource type="Script" uid="uid://dh2yghmcm5bdf" path="res://scripts/ui/settings_popup.gd" id="1_suvqx"]
+[ext_resource type="FontFile" uid="uid://cobthugrtjcsy" path="res://Fonts/NewPixelFont.tres" id="2_qcyvy"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_3lx7y"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fver1"]
 atlas = ExtResource("1_rpmj3")
-region = Rect2(630, 325, 200, 230)
+region = Rect2(426, 325, 200, 163)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d4wk3"]
-texture = SubResource("AtlasTexture_3lx7y")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hl00q"]
+texture = SubResource("AtlasTexture_fver1")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_suvqx"]
 atlas = ExtResource("1_rpmj3")
@@ -54,8 +54,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -1.0
 offset_top = -5.0
-offset_right = -1.0
-offset_bottom = -5.0
+offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.39215687)
@@ -74,7 +73,7 @@ offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.825, 0.825)
-theme_override_styles/panel = SubResource("StyleBoxTexture_d4wk3")
+theme_override_styles/panel = SubResource("StyleBoxTexture_hl00q")
 
 [node name="StickySettings" type="Sprite2D" parent="CorkboardPanel"]
 position = Vector2(199.99998, 76.363625)
