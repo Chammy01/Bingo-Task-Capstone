@@ -31,13 +31,17 @@ func _ready():
 	print("  Task History: %s" % TASK_HISTORY_SAVE_PATH)
 
 func _load_all_caches():
-	"""Load all save files into memory on startup"""
-	_settings_cache = _load_dictionary(SETTINGS_SAVE_PATH)
-	_scheduled_tasks_cache = _load_dictionary(SCHEDULED_TASKS_SAVE_PATH)
-	_task_history_cache = _load_dictionary(TASK_HISTORY_SAVE_PATH)
-	print("  Loaded %d settings" % _settings_cache.size())
-	print("  Loaded %d scheduled dates" % _scheduled_tasks_cache.get("scheduled_tasks", {}).size())
-	print("  Loaded %d history dates" % _task_history_cache.get("history", {}).size())
+	var settings_data = _load_dictionary(SETTINGS_SAVE_PATH)
+	if settings_data.has("settings"):
+		_settings_cache = settings_data.settings
+	else:
+		_settings_cache = settings_data
+		_scheduled_tasks_cache = _load_dictionary(SCHEDULED_TASKS_SAVE_PATH)
+		_task_history_cache = _load_dictionary(TASK_HISTORY_SAVE_PATH)
+		print("  Loaded %d settings" % _settings_cache.size())
+		print("  Loaded %d scheduled dates" % _scheduled_tasks_cache.get("scheduled_tasks", {}).size())
+		print("  Loaded %d history dates" % _task_history_cache.get("history", {}).size())
+
 
 # ============================================
 # TASKS (Daily Board)

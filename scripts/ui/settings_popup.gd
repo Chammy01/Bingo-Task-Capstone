@@ -157,6 +157,7 @@ func _on_music_toggled(is_on: bool):
 		print("  ❌ ERROR: Music bus doesn't exist!")
 	
 	_play_sound(BUTTON_CLICK_SOUND)
+	_save_settings()
 
 func _on_sfx_toggled(is_on: bool):
 	"""SFX toggle switched"""
@@ -177,6 +178,8 @@ func _on_sfx_toggled(is_on: bool):
 			print("  ✓ SFX OFF (-80 dB)")
 	else:
 		print("  ❌ ERROR: SFX bus doesn't exist!")
+		
+		_save_settings()
 
 # ============================================
 # SAVE/LOAD SETTINGS
@@ -229,3 +232,15 @@ func _play_sound(sound: AudioStream):
 	
 	button_sound.stream = sound
 	button_sound.play()
+	
+# ============================================
+# APP LIFECYCLE - SAVE ON FORCE CLOSE
+# ============================================
+
+func _notification(what):
+	match what:
+		NOTIFICATION_WM_CLOSE_REQUEST, \
+		NOTIFICATION_APPLICATION_PAUSED, \
+		NOTIFICATION_WM_GO_BACK_REQUEST:
+			_save_settings()
+			print("📱 Settings saved (app paused/closed)")
